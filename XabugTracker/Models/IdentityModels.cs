@@ -66,5 +66,19 @@ namespace XabugTracker.Models
         public DbSet<TicketType> TicketTypes { get; set; }
         public DbSet<TicketStatus> TicketStatuses { get; set; }
         public DbSet<TicketPriority> TicketPriorities { get; set; }
+
+        public System.Data.Entity.DbSet<XabugTracker.Models.Project> Projects { get; set; }
+
+        public System.Data.Entity.DbSet<XabugTracker.Models.Ticket> Tickets { get; set; }
+
+        public System.Data.Entity.DbSet<XabugTracker.Models.TicketAttachment> TicketAttachments { get; set; }
+
+        public System.Data.Entity.DbSet<XabugTracker.Models.ApplicationUser> ApplicationUsers { get; set; }
+
+        public System.Data.Entity.DbSet<XabugTracker.Models.TicketComment> TicketComments { get; set; }
+
+        public System.Data.Entity.DbSet<XabugTracker.Models.TicketHistory> TicketHistories { get; set; }
+
+        public System.Data.Entity.DbSet<XabugTracker.Models.TicketNotification> TicketNotifications { get; set; }
     }
 }
