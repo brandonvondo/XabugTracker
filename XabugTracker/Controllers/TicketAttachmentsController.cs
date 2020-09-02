@@ -1,18 +1,23 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using XabugTracker.Helpers;
 using XabugTracker.Models;
 
 namespace XabugTracker.Controllers
 {
+    [Authorize]
     public class TicketAttachmentsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private FileStamper fileStamper = new FileStamper();
 
         // GET: TicketAttachments
         public ActionResult Index()
@@ -49,18 +54,33 @@ namespace XabugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,TicketId,UserId,FilePath,Description,Created")] TicketAttachment ticketAttachment)
+        public ActionResult Create([Bind(Include = "TicketId,FileName,Description")] TicketAttachment ticketAttachment, HttpPostedFileBase file)
         {
             if (ModelState.IsValid)
             {
+                ticketAttachment.Created = DateTime.Now;
+                ticketAttachment.UserId = User.Identity.GetUserId();
+                if(file == null)
+                {
+                    TempData["Error"] = "You must supply a file!";
+                    return RedirectToAction("Dashboard", "Tickets", new { id = ticketAttachment.Id });
+                }
+
+                if(ImageUploadValidator.IsWebFriendlyImage(file) || FileUploadValidator.IsWebFriendlyFile(file))
+                {
+                    var fileName = fileStamper.MakeUnique(file.FileName);
+                    ticketAttachment.FileName = fileName;
+                    file.SaveAs(Path.Combine(Server.MapPath("~/UserUploads/"), fileName));
+                    ticketAttachment.FilePath = "/UserUploads/" + fileName;
+                }
+
                 db.TicketAttachments.Add(ticketAttachment);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Dashboard", "Tickets", new { id = ticketAttachment.TicketId });
             }
 
-            ViewBag.TicketId = new SelectList(db.Tickets, "Id", "SubmitterId", ticketAttachment.TicketId);
-            ViewBag.UserId = new SelectList(db.Users, "Id", "FirstName", ticketAttachment.UserId);
-            return View(ticketAttachment);
+            TempData["Error"] = "The model was invalid.";
+            return RedirectToAction("Dashboard", "Tickets", new { id = ticketAttachment.TicketId });
         }
 
         // GET: TicketAttachments/Edit/5

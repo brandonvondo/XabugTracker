@@ -18,6 +18,7 @@ namespace XabugTracker.Models
 
         #region Actual Properties
         public string FilePath { get; set; }
+        public string FileName { get; set; }
         public string Description { get; set; }
         public DateTime Created { get; set; }
         #endregion

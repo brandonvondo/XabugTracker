@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -6,23 +7,71 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using XabugTracker.Helpers;
 using XabugTracker.Models;
 
 namespace XabugTracker.Controllers
 {
+    [Authorize]
     public class TicketsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private ProjectHelper projectHelper = new ProjectHelper();
+        private TicketHelper ticketHelper = new TicketHelper();
+        private UserRolesHelper userRolesHelper = new UserRolesHelper();
+        private HistoryHelper historyHelper = new HistoryHelper();
 
         // GET: Tickets
         public ActionResult Index()
         {
-            var tickets = db.Tickets.Include(t => t.Project);
-            return View(tickets.ToList());
+            var userRole = userRolesHelper.ListUserRole();
+            var returnView = new List<Ticket>();
+            var userId = User.Identity.GetUserId();
+
+            switch (userRole)
+            {
+                case "Admin":
+                    returnView = db.Tickets.ToList();
+                    break;
+
+                case "Submitter":
+                case "Developer":
+                case "Project Manager":
+                    returnView = ticketHelper.ListUserTickets(User.Identity.GetUserId());
+                    break;
+            }
+            return View(returnView);
         }
 
-        // GET: Tickets/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult GetProjectTickets()
+        {
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
+            var ticketList = new List<Ticket>();
+            ticketList = user.Projects.SelectMany(p => p.Tickets).ToList();
+            return View("Index", ticketList);
+        }
+
+        public ActionResult GetAssignedTickets()
+        {
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
+            var ticketList = new List<Ticket>();
+            ticketList = user.Projects.SelectMany(p => p.Tickets.Where(t => t.DeveloperId == userId)).ToList();
+            return View("Index", ticketList);
+        }
+
+        public ActionResult GetSubmittedTickets()
+        {
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
+            var ticketList = new List<Ticket>();
+            ticketList = user.Projects.SelectMany(p => p.Tickets.Where(t => t.SubmitterId == userId)).ToList();
+            return View("Index", ticketList);
+        }
+
+        // GET: Tickets/Dashboard/5
+        public ActionResult Dashboard(int? id)
         {
             if (id == null)
             {
@@ -33,13 +82,25 @@ namespace XabugTracker.Controllers
             {
                 return HttpNotFound();
             }
+            List<ApplicationUser> projUse = ticket.Project.Users.ToList();
+            ViewBag.DeveloperIds = new SelectList(userRolesHelper.ProjectUsersInRole("Developer", projUse), "Id", "FullName");
+            ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name");
+            ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name");
             return View(ticket);
         }
 
-        // GET: Tickets/Create
+        //// GET: Tickets/Create
+        //[Authorize(Roles ="Submitter")]
         public ActionResult Create()
         {
-            ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name");
+            var userId = User.Identity.GetUserId();
+            if (userId == null)
+            {
+                return RedirectToAction("Index");
+            }
+            ViewBag.ProjectId = new SelectList(projectHelper.ListUserProjects(userId), "Id", "Name");
+            ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name");
+            ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name");
             return View();
         }
 
@@ -48,33 +109,35 @@ namespace XabugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,ProjectId,TicketPriorityId,TicketStatusId,TicketTypeId,SubmitterId,DeveloperId,Issue,IssueDescription,Created,Updated,IsResolved,IsArchived")] Ticket ticket)
+        //[Authorize(Roles ="Submitter")]
+        public ActionResult Create([Bind(Include = "Id,ProjectId,TicketPriorityId,TicketTypeId,Issue,IssueDescription")] Ticket ticket)
         {
+            var userId = User.Identity.GetUserId();
             if (ModelState.IsValid)
             {
+                ticket.TicketStatusId = db.TicketStatuses.Where(ts => ts.Name == "Open").FirstOrDefault().Id;
+                ticket.SubmitterId = userId;
+                ticket.Created = DateTime.Now;
                 db.Tickets.Add(ticket);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Dashboard", "Tickets", new { id = ticket.ProjectId });
             }
-
-            ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
+            ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name");
+            ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name");
             return View(ticket);
         }
 
-        // GET: Tickets/Edit/5
-        public ActionResult Edit(int? id)
+        //POST: Tickets/Dashboard modal AssignDev/6
+        public ActionResult AssignDev(string DeveloperIds, string oldDev, string Id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Ticket ticket = db.Tickets.Find(id);
-            if (ticket == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
-            return View(ticket);
+            int idLook = Int16.Parse(Id);
+            Ticket ticket = db.Tickets.Where(t => t.Id == idLook).FirstOrDefault();
+            ticketHelper.ManageTicketNotifications(oldDev, DeveloperIds, idLook);
+            historyHelper.DeveloperUpdate(oldDev, DeveloperIds, idLook);
+            ticket.DeveloperId = DeveloperIds;
+            db.Entry(ticket).State = EntityState.Modified;
+            db.SaveChanges();
+            return RedirectToAction("Dashboard", new { id = Id });
         }
 
         // POST: Tickets/Edit/5
@@ -82,42 +145,43 @@ namespace XabugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        //[Authorize(Roles ="Submitter")]
         public ActionResult Edit([Bind(Include = "Id,ProjectId,TicketPriorityId,TicketStatusId,TicketTypeId,SubmitterId,DeveloperId,Issue,IssueDescription,Created,Updated,IsResolved,IsArchived")] Ticket ticket)
         {
             if (ModelState.IsValid)
             {
+                ticket.Updated = DateTime.Now;
+                var oldTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == ticket.Id);
                 db.Entry(ticket).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                var newTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == ticket.Id);
+
+                historyHelper.ManageHistories(oldTicket, newTicket);
+                ticketHelper.ManageTicketNotifications(oldTicket, newTicket);
+                return RedirectToAction("Dashboard", new { id = newTicket.Id });
             }
-            ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
-            return View(ticket);
+
+            return RedirectToAction("Dashboard", new { id = ticket.Id });
         }
 
-        // GET: Tickets/Delete/5
-        public ActionResult Delete(int? id)
+        public ContentResult ManageNotifications(FormCollection formCollection)
         {
-            if (id == null)
+            var notifId = formCollection["Id"];
+            var purposeName = formCollection["Purpose"];
+            int notifLook = Int16.Parse(notifId);
+            string message;
+            if (purposeName == "delete")
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                ticketHelper.DeleteNotification(notifLook);
+                message = "Your notification has been deleted.";
             }
-            Ticket ticket = db.Tickets.Find(id);
-            if (ticket == null)
+            else
             {
-                return HttpNotFound();
+                ticketHelper.ReadNotification(notifLook);
+                message = "Your notification has been marked as read and can be reread/deleted in your profile";
             }
-            return View(ticket);
-        }
 
-        // POST: Tickets/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Ticket ticket = db.Tickets.Find(id);
-            db.Tickets.Remove(ticket);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            return Content(message);
         }
 
         protected override void Dispose(bool disposing)

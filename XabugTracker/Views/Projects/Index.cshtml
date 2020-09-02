@@ -1,45 +1,96 @@
 ﻿@model IEnumerable<XabugTracker.Models.Project>
-
+@using XabugTracker.Helpers;
 @{
     ViewBag.Title = "Index";
+    UserHelper userHelper = new UserHelper();
 }
 
-<h2>Index</h2>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#projtable').DataTable();
+        $(".main-panel").css("background-color", "gainsboro");
+    });
+</script>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Created)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.IsArchived)
-        </th>
-        <th></th>
-    </tr>
+<div class="card tablecardpad">
+    <div class="row">
+        <div class="card-content">
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Created)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.IsArchived)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
+            <table id="projtable" class="table table-striped">
 
-</table>
+                <thead>
+
+                    <tr>
+
+                        <th>Project Name</th>
+
+                        <th>Project Members</th>
+
+                        <th>Project Tickets</th>
+
+                        <th>Project Manager</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tfoot>
+
+                    <tr>
+
+                        <th>Project Name</th>
+
+                        <th>Project Members</th>
+
+                        <th>Project Tickets</th>
+
+                        <th>Project Manager</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </tfoot>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        string pmName = "";
+                        if (item.ManagerId != null)
+                        {
+                            pmName = userHelper.GetFullName(item.ManagerId);
+                        }
+                        else { pmName = "Undefined"; }
+                        <tr>
+
+                            <td>@item.Name</td>
+
+                            <td>@item.Users.Count</td>
+
+                            <td>@item.Tickets.Count</td>
+
+                            <td>@pmName</td>
+
+                            <td class="td-actions">
+
+                                <button type="button" rel="tooltip" title="View Details" class="btn-xs" onclick="window.location.href='@Url.Action("Details", new { id = item.Id })'">
+
+                                    <i class="fa fa-list-ul"></i>
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+</div>

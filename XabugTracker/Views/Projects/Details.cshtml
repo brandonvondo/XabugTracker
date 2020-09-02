@@ -1,42 +1,559 @@
 ﻿@model XabugTracker.Models.Project
-
+@using XabugTracker.Helpers
 @{
     ViewBag.Title = "Details";
+    UserHelper userHelper = new UserHelper();
+    UserRolesHelper roleHelper = new UserRolesHelper();
+    ProjectHelper projectHelper = new ProjectHelper();
+    TicketHelper ticketHelper = new TicketHelper();
 }
 
-<h2>Details</h2>
+<div class="container-fluid">
+    <!--Modals-->
+    <div class="modal fade" id="modalCreateTicket" tabindex="-1" role="dialog" aria-labelledby="CreateTicketQ"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title w-100 font-weight-bold">Create a Ticket for @Model.Name</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body mx-3">
+                    @using (Html.BeginForm("Create", "Tickets", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <input type="hidden" name="ProjectId" id="ProjectId" value=@Model.Id />
 
-<div>
-    <h4>Project</h4>
+                            <div class="form-group">
+                                @Html.Label("Title", htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.Editor("Issue", new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.Label("Description", htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    <textarea name="IssueDescription" id="IssueDescription" class="form-control" placeholder="Min length 10" minLength="10" rows="4"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.Label("Ticket Priority", htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.DropDownList("TicketPriorityId", null, htmlAttributes: new { @class = "form-control dropdown-toggle", data_toggle = "dropdown" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.Label("Ticket Type", htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.DropDownList("TicketTypeId", null, htmlAttributes: new { @class = "form-control dropdown-toggle", data_toggle = "dropdown" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <input type="submit" value="Create" class="btn btn-default" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Javascript-->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+
+        $('#pindexlist').addClass("active");
+
+        jQuery.fn.dataTableExt.oSort['checked-in-asc'] = function (a, b) {
+            var a_sort = parseInt($(a).data("sort"));
+            var b_sort = parseInt($(b).data("sort"));
+            return ((a_sort < b_sort) ? -1 : ((a_sort > b_sort) ? 1 : 0));
+        };
+
+        jQuery.fn.dataTableExt.oSort['checked-in-desc'] = function (a, b) {
+            var a_sort = parseInt($(a).data("sort"));
+            var b_sort = parseInt($(b).data("sort"));
+            return ((a_sort < b_sort) ? 1 : ((a_sort > b_sort) ? -1 : 0));
+        };
+
+        $('#datatables').DataTable({
+            "aoColumns": [null, null, {"sType":"checked-in"}],
+	            "pagingType": "full_numbers",
+	            "lengthMenu": [[10, 25, 50, -1], [5, 25, 50, "All"]],
+                responsive: true,
+	            language: {
+	            search: "_INPUT_",
+		            searchPlaceholder: "Search users",
+		        }
+        });
+
+        $('#ticktable').DataTable({
+            "pagingType": "full_numbers",
+            "lengthMenu": [[5, 10, 15, -1], [5, 25, 50, "All"]],
+            responsive: true,
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search tickets",
+            }
+        });
+
+        $('#datatables').on("click", function () {
+            $('.checkuserman').bootstrapToggle();
+        });
+
+        $(".main-panel").css("background-color", "gainsboro")
+
+        $('.checkuserman').change(function () {
+            var dataSort = $(this).data("sort")
+            if (dataSort == 1) {
+                $(this).data( "sort", 0 )
+            }
+            else {
+                $(this).data( "sort", 1 )
+            }
+            var formData = new FormData();
+            formData.append("UseId", this.id);
+            formData.append("ProjId", @Model.Id);
+            formData.append("SwitchBool", $(this).prop('checked'));
+            var url = '@Url.Action("ManageProjectMembers","Projects")'
+            $.ajax({
+                url: url,
+                type: 'POST',
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: formData,
+                success: function (response) {
+                    Swal.fire(
+                        'Success!',
+                        response,
+                        'success'
+                    );
+                }
+            });
+        });
+    });
+    </script>
+
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" class="tab" href="#home">Dashboard</a></li>
+        <li><a data-toggle="tab" class="tab" href="#menu1">Manage Users</a></li>
+        <li><a data-toggle="tab" class="tab" href="#menu2">Project History</a></li>
+    </ul>
+    <p class="text-right">
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) | @Html.ActionLink("Back to List", "Index")
+    </p>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
+    <div class="tab-content">
+        <div id="home" class="tab-pane fade in active">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <div class="row">
+                                    <br />
+                                    <div class="col-md-6">
+                                        <h3 class="card-title">Project Overview for '@Model.Name'</h3>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5 class="card-title">Created on @Model.Created.ToString("MMM dd, yyyy")</h5>
+                                    </div>
+                                </div>
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-6 ">
+                                        <div class="card" data-background-color="brown">
+                                            <div class="card-content">
+                                                <h4 class="card-title">
+                                                    Amount of tickets: @Model.Tickets.Count
+                                                </h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card" data-background-color="orange">
+                                            <div class="card-content">
+                                                <h4 class="card-title">
+                                                    Amount of Users: @Model.Users.Count
+                                                </h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="col-md-6 text-center">
+                                            <h3 class="card-title">Project Manager</h3>
+                                        </div>
+                                        @if (Model.ManagerId != null)
+                                        {
+                                            var managerUser = userHelper.GetUserById(Model.ManagerId);
+                                            <div class="col-md-6">
+                                                <div class="photo">
+                                                    <img class="managepic" src=@managerUser.AvatarPath />
+                                                </div>
+                                                <h6 class="managename text-center">@managerUser.FirstName <br /> @managerUser.LastName</h6>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col-md-6">
+                                                <h6 class="card-title">This project is missing a project manager.</h6>
+                                            </div>
+                                        }
+                                    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Created)
-        </dt>
+                                    <div class="row text-right">
+                                        <button class="btn card-tikbtn" data-toggle="modal" data-target="#modalCreateTicket">Create Ticket</button>
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-md-offset-1">
+                        <div class="table-responsive">
+                            <table id="usertable" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayName("Name")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("Role")
+                                        </th>
+                                    </tr>
+                                </thead>
+                                @if (Model.Users.Count > 0)
+                                {
+                                    foreach (var user in Model.Users)
+                                    {
 
-        <dd>
-            @Html.DisplayFor(model => model.Created)
-        </dd>
+                                        var roleName = roleHelper.ListUserRoles(user.Id).FirstOrDefault();
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    @user.FullName
+                                                </td>
+                                                <td>
+                                                    @roleName
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    }
+                                }
+                                else
+                                {
+                                    <tbody>
+                                        <tr>
+                                            <td>There are no users on this project.</td>
+                                            <td>Consider adding some in the manage users tab.</td>
+                                        </tr>
+                                    </tbody>
+                                }
+                            </table>
+                        </div>
+                    </div>
+                </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.IsArchived)
-        </dt>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">TICKETS</h4>
+                            </div>
+                            <div class="card-content">
+                                <div class="row">
+                                    <div class="left-vertical-tabs">
+                                        <ul class="nav nav-stacked" role="tablist">
+                                            <li class="active">
+                                                <a href="#activetick" role="tab" data-toggle="tab">
+                                                    Active Tickets
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#archtick" role="tab" data-toggle="tab">
+                                                    Archived Tickets
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="right-text-tabs">
+                                        <!-- Tab panes -->
+                                        <div class="tab-content">
+                                            <div class="tab-pane active" id="activetick">
+                                                @if (Model.Tickets.Count > 0)
+                                                {
+                                                    <table id="ticktable" class="table table-striped table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>
+                                                                    @Html.DisplayName("Issue Name")
+                                                                </th>
+                                                                <th>
+                                                                    @Html.DisplayName("Developer Name")
+                                                                </th>
+                                                                <th>
+                                                                    @Html.DisplayName("Priority")
+                                                                </th>
+                                                                <th>
+                                                                    @Html.DisplayName("Submitter Name")
+                                                                </th>
+                                                                <th>
+                                                                    @Html.DisplayName("Created")
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tfoot>
+                                                            <tr>
+                                                                <th>
+                                                                    @Html.DisplayName("Issue Name")
+                                                                </th>
+                                                                <th>
+                                                                    @Html.DisplayName("Developer Name")
+                                                                </th>
+                                                                <th>
+                                                                    @Html.DisplayName("Priority")
+                                                                </th>
+                                                                <th>
+                                                                    @Html.DisplayName("Submitter Name")
+                                                                </th>
+                                                                <th>
+                                                                    @Html.DisplayName("Created")
+                                                                </th>
+                                                            </tr>
+                                                        </tfoot>
+                                                        <tbody>
+                                                            @foreach (var ticket in Model.Tickets.Where(t => !t.IsArchived))
+                                                            {
+                                                                var prio = "prio-" + ticket.TicketPriority.Name;
+                                                                var submN = userHelper.GetFullName(ticket.SubmitterId);
+                                                                var devN = "";
+                                                                if (ticket.DeveloperId != null)
+                                                                {
+                                                                    devN = userHelper.GetFullName(ticket.DeveloperId);
+                                                                }
+                                                                else
+                                                                {
+                                                                    devN = "Unassigned";
+                                                                }
 
-        <dd>
-            @Html.DisplayFor(model => model.IsArchived)
-        </dd>
+                                                            <tr>
+                                                                <td>
+                                                                    <a href=@Url.Action("Dashboard","Tickets", new { id = ticket.Id })>@ticket.Issue</a>
+                                                                </td>
+                                                                <td>
+                                                                    @devN
+                                                                </td>
+                                                                <td>
+                                                                    <span id=@prio class="priospan">@ticket.TicketPriority.Name</span>
+                                                                </td>
+                                                                <td>
+                                                                    @submN
+                                                                </td>
+                                                                <td>
+                                                                    @ticket.Created.ToString("MMM dd, yyyy")
+                                                                </td>
+                                                            </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                }
+                                                else
+                                                {
+                                                    <div class="card-title text-center">
+                                                        <h3>TICKETS</h3> <br />
+                                                        <p>There are no tickets asscociated with this project.</p>
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="tab-pane" id="archtick">
+                                                @if (Model.Tickets.Where(t => t.IsArchived).Count() > 0)
+                                                {
+                                                    <table id="ticktable" class="table table-striped table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>
+                                                                    @Html.DisplayName("Issue Name")
+                                                                </th>
+                                                                <th>
+                                                                    @Html.DisplayName("Submitter Name")
+                                                                </th>
+                                                                <th>
+                                                                    @Html.DisplayName("Priority")
+                                                                </th>
+                                                                <th>
+                                                                    @Html.DisplayName("Created")
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tfoot>
+                                                            <tr>
+                                                                <th>
+                                                                    @Html.DisplayName("Issue Name")
+                                                                </th>
+                                                                <th>
+                                                                    @Html.DisplayName("Submitter Name")
+                                                                </th>
+                                                                <th>
+                                                                    @Html.DisplayName("Priority")
+                                                                </th>
+                                                                <th>
+                                                                    @Html.DisplayName("Created")
+                                                                </th>
+                                                            </tr>
+                                                        </tfoot>
+                                                        <tbody>
+                                                            @foreach (var ticket in Model.Tickets.Where(t => t.IsArchived))
+                                                            {
+                                                                var prio = "prio-" + ticket.TicketPriority.Name;
+                                                                var submN = userHelper.GetFullName(ticket.SubmitterId);
+                                                                <tr>
+                                                                    <td>
+                                                                        @ticket.Issue
+                                                                    </td>
+                                                                    <td>
+                                                                        @submN
+                                                                    </td>
+                                                                    <td>
+                                                                        <span id=@prio class="priospan">@ticket.TicketPriority.Name</span>
+                                                                    </td>
+                                                                    <td>
+                                                                        @ticket.Created.ToString("MMM dd, yyyy")
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                }
+                                                else
+                                                {
+                                                    <div class="card-title text-center">
+                                                        <h3>ARCHIVED TICKETS</h3> <br />
+                                                        <p>There are no archived tickets asscociated with this project.</p>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="menu1" class="tab-pane fade">
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p class="category">Toggle while on Removed to add the user. Toggle while on Added to remove the user. If the add/ remove switches appear to break click in-line.</p>
 
-    </dl>
-</div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+                            <br>
+
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="toolbar">
+                                        <!--Here you can write extra buttons/actions for the toolbar-->
+                                    </div>
+                                    <div class="fresh-datatables">
+                                        <table id="datatables" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Roles</th>
+                                                    <th>Add / Remove</th>
+                                                </tr>
+                                            </thead>
+                                            <tfoot>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Roles</th>
+                                                    <th>Add / Remove</th>
+                                                </tr>
+                                            </tfoot>
+                                            <tbody>
+                                                @foreach (var user in ViewBag.Users)
+                                                {
+                                                    string spanId = "span" + user.Id;
+                                                    var onProject = projectHelper.IsUserOnProject(user.Id, Model.Id);
+                                                    var roleName = roleHelper.ListUserRole(user.Id);
+                                                    if (onProject)
+                                                    {
+                                                        <tr>
+                                                            <td>@user.FullName</td>
+                                                            <td>@roleName</td>
+                                                            <td>
+                                                                <input type="checkbox" id=@user.Id class="checkuserman" data-toggle="toggle" data-on="Added" data-off="Removed" data-sort="1" checked data-width="100">
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                    else
+                                                    {
+                                                        <tr>
+                                                            <td>@user.FullName</td>
+                                                            <td>@roleName</td>
+                                                            <td>
+                                                                <input type="checkbox" id=@user.Id class="checkuserman" data-toggle="toggle" data-on="Added" data-off="Removed" data-sort="0" data-width="100">
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div><!--  end card  -->
+                        </div> <!-- end col-md-12 -->
+                    </div> <!-- end row -->
+                </div>
+            </div>
+        </div>
+        <div id="menu2" class="tab-pane fade">
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-8 col-lg-offset-2">
+                            <div class="card smallcard">
+
+                                <h2 class="card-header">Project History</h2>
+                                <div class="card-content">
+                                    @foreach (var entry in Model.PHistory.OrderByDescending(e => e.Created))
+                                    {
+                                        <div class="entry">
+                                            @entry.Message
+                                        </div> <br />
+                                    }
+
+                                </div>
+                            </div><!--  end card  -->
+                        </div> <!-- end col-md-12 -->
+                    </div> <!-- end row -->
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+
+

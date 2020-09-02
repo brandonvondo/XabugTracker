@@ -1,4 +1,339 @@
-﻿@model XabugTracker.Models.RegisterViewModel
+﻿@using XabugTracker.Models
+@model ExtendedRegisterViewModel
+@{
+    Layout = null;
+}
+
+<!--
+
+  =========================================================
+  * Paper Dashboard PRO - V1.3.1
+  =========================================================
+
+  * Product Page: https://www.creative-tim.com/product/paper-dashboard-pro
+  * Available with purchase of license from https://www.creative-tim.com/product/paper-dashboard-pro
+  * Copyright 2017 Creative Tim (https://www.creative-tim.com)
+  * License Creative Tim (https://www.creative-tim.com/license)
+
+  =========================================================
+
+-->
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="apple-touch-icon" sizes="76x76" href="~/img/apple-icon.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="~/img/favicon.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <title>xaBug Tracker</title>
+
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+
+
+    <!-- Bootstrap core CSS     -->
+    <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!--  Paper Dashboard core CSS    -->
+    <link href="~/Content/css/paper-dashboard.css" rel="stylesheet" />
+
+
+    <!--  Fonts and icons     -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
+    <link href="~/Content/css/themify-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            width: 100%;
+            margin: 0 auto;
+            padding: 0px;
+        }
+        .card{
+            background-color: gainsboro;
+        }
+        #wrapper {
+            text-align: center;
+            margin: 0 auto;
+            padding: 0px;
+            width: 100%;
+        }
+
+        #output_image {
+            max-width: 300px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-transparent navbar-absolute">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle navbar-toggle-black" data-toggle="collapse" data-target="#navigation-example-2">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar "></span>
+                    <span class="icon-bar "></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        @Html.ActionLink("Looking to login?", "Login", "Account", null, new { @class = "btn" })
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="wrapper wrapper-full-page">
+        <div class="register-page" data-color="blue">
+            <!--   you can change the color of the filter page using: data-color="blue | azure | green | orange | red | purple" -->
+            <div class="content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-8 col-md-offset-2">
+                            <div class="header-text">
+                                <img src="~/img/trackerlogo.png" />
+                                <h4>Register to start organizing your projects and X'ing bugs.</h4>
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="media">
+                                <div class="media-left">
+                                    <div class="icon icon-danger">
+                                        <i class="ti ti-user"></i>
+                                    </div>
+                                </div>
+                                <div class="media-body">
+                                    <h5>Unique Role Functions</h5>
+                                    Individually crafted views for each role to give the user greatest ease and efficiency.
+                                </div>
+                            </div>
+                            <div class="media">
+                                <div class="media-left">
+                                    <div class="icon icon-warning">
+                                        <i class="ti-layout"></i>
+                                    </div>
+                                </div>
+                                <div class="media-body">
+                                    <h5>Response Easy-to-use Tables</h5>
+                                    Using DataTables.js admins/ project managers can easily manage everything from roles to projects with a few simple clicks.
+                                </div>
+                            </div>
+                            <div class="media">
+                                <div class="media-left">
+                                    <div class="icon icon-info">
+                                        <i class="ti-comments"></i>
+                                    </div>
+                                </div>
+                                <div class="media-body">
+                                    <h5>Commenting / Managing</h5>
+                                    Individual ticket commenting to communicate clearly with your team.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-md-offset-1">
+                            <div class="card card-wizard" id="wizardCard">
+                                @*<form id="wizardForm" method="post" action="/Register/Account" enctype = "Multipart/form-data" role = "form">*@
+                                @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @id = "wizardForm", role = "form", enctype = "Multipart/form-data" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <div class="card-header text-center">
+                                        <h4 class="card-title">Sign up</h4>
+                                        <p class="category">3 step process to create an account.</p>
+                                    </div>
+                                    <div class="card-content">
+                                        <ul class="nav">
+                                            <li><a href="#tab1" data-toggle="tab">First Tab</a></li>
+                                            <li><a href="#tab2" data-toggle="tab">Second Tab</a></li>
+                                            <li><a href="#tab3" data-toggle="tab">Third Tab</a></li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div class="tab-pane" id="tab1">
+                                                <h5 class="text-center">Please tell us more about yourself.</h5>
+                                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                                <h6 class="text-center">Password requires 6 characters including: <br /> a number, lowercase letter, Uppercase letter, and Symbol</h6>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-10 col-md-offset-1">
+                                                        <div class="form-group">
+                                                            <label class="control-label">
+                                                                Email<star>*</star>
+                                                            </label>
+                                                            <input class="form-control"
+                                                                   type="text"
+                                                                   name="Email"
+                                                                   email="true"
+                                                                   required
+                                                                   placeholder="ex: email@gmail.com" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-5 col-md-offset-1">
+                                                        <div class="form-group">
+                                                            <label class="control-label">
+                                                                Password
+                                                            </label>
+                                                            <input class="form-control valid" data-val="true" data-val-length="The Password must be at least 6 characters long." data-val-length-max="100" data-val-length-min="6" data-val-required="The Password field is required." id="Password" name="Password" type="password" aria-describedby="Password-error" aria-invalid="false" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <label class="control-label">
+                                                                Confirm Password
+                                                            </label>
+                                                            <input class="form-control" data-val="true" data-val-equalto="The password and confirmation password do not match." data-val-equalto-other="*.Password" id="ConfirmPassword" name="ConfirmPassword" type="password" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane" id="tab2">
+                                                <h5 class="text-center">Personal Customization</h5>
+                                                <div class="row">
+                                                    <div class="col-md-10 col-md-offset-1">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Upload an Avatar or leave blank to continue with default!</label>
+                                                            <div id="wrapper">
+                                                                <input name="image" type="file" class="form-control" id="fileUpload" onchange="preview_image(event)"/>
+                                                                <img id="output_image"/>
+                                                            </div>
+                                                            </div>
+                                                        </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-5 col-md-offset-1">
+                                                        <div class="form-group">
+                                                            <label class="control-label">
+                                                                First Name
+                                                            </label>
+                                                            <input class="form-control"
+                                                                   type="text"
+                                                                   name="FirstName"
+                                                                   required
+                                                                   placeholder="ex: Mike" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <label class="control-label">
+                                                                Last Name
+                                                            </label>
+                                                            <input class="form-control"
+                                                                   type="text"
+                                                                   name="LastName"
+                                                                   required
+                                                                   placeholder="ex: Smith" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane" id="tab3">
+                                                <h2 class="text-center text-space">Finalize <br><small> 													Click on "<b>Finish</b>" to create a bugtracker account</small></h2>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button type="button" class="btn btn-default btn-fill btn-wd btn-back pull-left">Back</button>
+                                        <button type="button" class="btn btn-info btn-fill btn-wd btn-next pull-right">Next</button>
+                                        <input type="submit" class="btn btn-info btn-fill btn-wd btn-finish pull-right" onclick="onFinishWizard()" value="Submit!">
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    @*</form>*@
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+        </div>
+    </div>
+    <!--   Core JS Files. Extra: TouchPunch for touch library inside jquery-ui.min.js   -->
+    <script src="~/Scripts/js/jquery.min.js" type="text/javascript"></script>
+    <script src="~/Scripts/js/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="~/Scripts/js/perfect-scrollbar.min.js" type="text/javascript"></script>
+    <script src="~/Scripts/js/bootstrap.min.js" type="text/javascript"></script>
+
+    <!--  Forms Validations Plugin -->
+    <script src="~/Scripts/js/jquery.validate.min.js"></script>
+
+    <!-- Promise Library for SweetAlert2 working on IE -->
+    <script src="~/Scripts/js/es6-promise-auto.min.js"></script>
+
+    <!--  Plugin for Date Time Picker and Full Calendar Plugin-->
+    <script src="~/Scripts/js/moment.min.js"></script>
+
+    <!--  Date Time Picker Plugin is included in this js file -->
+    <script src="~/Scripts/js/bootstrap-datetimepicker.js"></script>
+
+    <!--  Select Picker Plugin -->
+    <script src="~/Scripts/js/bootstrap-selectpicker.js"></script>
+
+    <!--  Switch and Tags Input Plugins -->
+    <script src="~/Scripts/js/bootstrap-switch-tags.js"></script>
+
+    <!-- Circle Percentage-chart -->
+    <script src="~/Scripts/js/jquery.easypiechart.min.js"></script>
+
+    <!--  Charts Plugin -->
+    <script src="~/Scripts/js/chartist.min.js"></script>
+
+    <!--  Notifications Plugin    -->
+    <script src="~/Scripts/js/bootstrap-notify.js"></script>
+
+    <!-- Sweet Alert 2 plugin -->
+    <script src="~/Scripts/js/sweetalert2.js"></script>
+
+    <!-- Vector Map plugin -->
+    <script src="~/Scripts/js/jquery-jvectormap.js"></script>
+
+    <!--  Google Maps Plugin    -->
+    @*<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>*@
+
+    <!-- Wizard Plugin    -->
+    <script src="~/Scripts/js/jquery.bootstrap.wizard.min.js"></script>
+
+    <!--  Bootstrap Table Plugin    -->
+    <script src="~/Scripts/js/bootstrap-table.js"></script>
+
+    <!--  Plugin for DataTables.net  -->
+    <script src="~/Scripts/js/jquery.datatables.js"></script>
+
+    <!--  Full Calendar Plugin    -->
+    <script src="~/Scripts/js/fullcalendar.min.js"></script>
+
+    <!-- Paper Dashboard PRO Core javascript and methods for Demo purpose -->
+    <script src="~/Scripts/js/paper-dashboard.js"></script>
+
+    <!-- My Custom JS-->
+    <script src="~/Scripts/js/custom.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            custom.initWizard();
+        });
+    </script>
+
+    <script type='text/javascript'>
+        function preview_image(event) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var output = document.getElementById('output_image');
+                output.src = reader.result;
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+</body>
+</html>
+
+@*@model XabugTracker.Models.RegisterViewModel
 @{
     ViewBag.Title = "Register";
 }
@@ -37,5 +372,5 @@
 }
 
 @section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryval")*@
 }

@@ -19,10 +19,10 @@ namespace XabugTracker.Models
         public virtual TicketType TicketType { get; set; }
         public virtual TicketStatus TicketStatus { get; set; }
         public virtual TicketPriority TicketPriority { get; set; }
-        public ICollection<TicketAttachment> Attachments { get; set; }
-        public ICollection<TicketComment> Comments { get; set; }
-        public ICollection<TicketHistory> Histories { get; set; }
-        public ICollection<TicketNotification> Notifications { get; set; }
+        public virtual ICollection<TicketAttachment> Attachments { get; set; }
+        public virtual ICollection<TicketComment> Comments { get; set; }
+        public virtual ICollection<TicketHistory> Histories { get; set; }
+        public virtual ICollection<TicketNotification> Notifications { get; set; }
         #endregion
 
         #region Ticket Properties

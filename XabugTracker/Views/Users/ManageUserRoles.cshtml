@@ -1,0 +1,32 @@
+﻿@using XabugTracker.Models
+@model ApplicationUser
+
+@{
+    ViewBag.Title = "ManageUserRoles";
+}
+
+<h2>Manage User Roles</h2>
+
+<div class="row">
+    <div class="col-3 text-center h2">
+        Managing Role for @Model.FullName
+    </div>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-3">
+            @Html.DropDownList("RoleName", "--no role--")
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <button type="submit" class="btn btn-primary">Submit Role Change</button>
+        </div>
+        <div class="col-3">
+            @Html.ActionLink("Users", "Index")
+        </div>
+    </div>
+}

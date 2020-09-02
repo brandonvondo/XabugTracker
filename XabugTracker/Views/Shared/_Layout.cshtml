@@ -1,44 +1,592 @@
-﻿<!DOCTYPE html>
-<html>
+﻿@using XabugTracker.Helpers
+@{
+    UserHelper userHelper = new UserHelper();
+    UserRolesHelper userRolesHelper = new UserRolesHelper();
+    ProjectHelper projectHelper = new ProjectHelper();
+    TicketHelper tickHelper = new TicketHelper();
+    var user = userHelper.GetUser();
+
+}
+<!--
+
+  =========================================================
+  * Paper Dashboard PRO - V1.3.1
+  =========================================================
+
+  * Product Page: https://www.creative-tim.com/product/paper-dashboard-pro
+  * Available with purchase of license from https://www.creative-tim.com/product/paper-dashboard-pro
+  * Copyright 2017 Creative Tim (https://www.creative-tim.com)
+  * License Creative Tim (https://www.creative-tim.com/license)
+
+  =========================================================
+
+-->
+<!--
+
+  =========================================================
+  * Paper Dashboard PRO - V1.3.1
+  =========================================================
+
+  * Product Page: https://www.creative-tim.com/product/paper-dashboard-pro
+  * Available with purchase of license from https://www.creative-tim.com/product/paper-dashboard-pro
+  * Copyright 2017 Creative Tim (https://www.creative-tim.com)
+  * License Creative Tim (https://www.creative-tim.com/license)
+
+  =========================================================
+
+-->
+
+<!doctype html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
 
+
+
+    <title>xaBug Tracker</title>
+
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+
+
+    <!-- Bootstrap core CSS     -->
+    <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!--  Paper Dashboard core CSS    -->
+    <link href="~/Content/css/paper-dashboard.css" rel="stylesheet" />
+
+    <!--  Fonts and icons     -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
+    <link href="~/Content/css/themify-icons.css" rel="stylesheet">
+
+    <!-- Bootstrap Toggle -->
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+
+    <!-- Custom CSS-->
+    <link href="~/Content/custom.css" rel="stylesheet" />
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
-                @Html.Partial("_LoginPartial")
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="modal fade" id="modalCreateProject" tabindex="-1" role="dialog" aria-labelledby="CreateProjectQ"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h4 class="modal-title w-100 font-weight-bold">Quick Create Project</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body mx-3">
+                        @using (Html.BeginForm("Create", "Projects", FormMethod.Post))
+                        {
+                            ViewBag.pmID = new SelectList(userRolesHelper.UsersInRole("Project Manager"), "Id", "FullName");
+                            @Html.AntiForgeryToken()
+                            <div class="form-horizontal">
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                <div class="form-group">
+                                    @Html.Label("Project Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.Editor("Name", new { htmlAttributes = new { @class = "form-control" } })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    @Html.Label("Project Manager", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.DropDownList("pmID", null, htmlAttributes: new { @class = "form-control dropdown-toggle", data_toggle = "dropdown" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <input type="submit" value="Create" class="btn btn-default" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
+        <div class="modal fade" id="modalUserRoles" tabindex="-1" role="dialog" aria-labelledby="UserRolesQ"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h4 class="modal-title w-100 font-weight-bold">Manager Users</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body mx-3">
+                        @using (Html.BeginForm())
+                        {
+                            var userIds = userRolesHelper.UsersNotInRole("Admin");
+                            ViewBag.UserIds = new MultiSelectList(userIds, "Id", "Email");
+                            ViewBag.RoleName = userRolesHelper.SelectListRoles();
+                            @Html.AntiForgeryToken()
+
+                            <div class="row">
+                                <div class="col-md-8">
+                                    @Html.ListBox("UserIds")
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.DropDownList("RoleName", "--no role--")
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <button type="submit" class="btn btn-primary btn-roles">Manage Role Assignment</button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @if (User.IsInRole("Submitter") && projectHelper.IsUserOnAnyProject())
+    {
+        ViewBag.TicketPriorityId = tickHelper.LayoutViewbag("prio");
+        ViewBag.TicketTypeId = tickHelper.LayoutViewbag("type");
+        ViewBag.ProjectId = new SelectList(projectHelper.ListUserProjects(), "Id", "Name");
+        <div class="modal fade" id="modalCreateTicket" tabindex="-1" role="dialog" aria-labelledby="CreateTicketQ"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h4 class="modal-title w-100 font-weight-bold">Create a Ticket</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        </button>
+                    </div>
+                    <div class="modal-body mx-3">
+                        @using (Html.BeginForm("Create", "Tickets", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            <div class="form-horizontal">
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                                <div class="form-group">
+                                    @Html.Label("Project", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.DropDownList("ProjectId", null, htmlAttributes: new { @class = "form-control dropdown-toggle", data_toggle = "dropdown" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.Label("Title", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.Editor("Issue", new { htmlAttributes = new { @class = "form-control" } })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.Label("Description", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        <textarea name="IssueDescription" id="IssueDescription" class="form-control" placeholder="Min length 10" minLength="10" rows="4"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.Label("Ticket Priority", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.DropDownList("TicketPriorityId", null, htmlAttributes: new { @class = "form-control dropdown-toggle", data_toggle = "dropdown" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.Label("Ticket Type", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.DropDownList("TicketTypeId", null, htmlAttributes: new { @class = "form-control dropdown-toggle", data_toggle = "dropdown" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <input type="submit" value="Create" class="btn btn-default" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="wrapper">
+        <div class="sidebar" data-background-color="brown" data-active-color="danger">
+            <!--
+                Tip 1: you can change the color of the sidebar's background using: data-background-color="white | brown"
+                Tip 2: you can change the color of the active button using the data-active-color="primary | info | success | warning | danger"
+            -->
+            <div class="logo">
+                <a class="simple-text logo-mini">
+                    <img src="~/img/trackerlogodashsmw.png" />
+                </a>
+
+                <a class="simple-text logo-normal">
+                    <img src="~/img/trackerlogodashw.png" />
+                </a>
+            </div>
+            <div class="sidebar-wrapper">
+                @{ if (User.Identity.IsAuthenticated)
+                    {
+                        var myId = userHelper.GetUserId();
+                        var avatar = userHelper.GetAvatarPath();
+                        var name = userHelper.GetFullName();
+                        var role = userRolesHelper.ListUserRoles(myId).ToList().FirstOrDefault();
+                        <div class="user">
+                            <div class="info">
+                                <div class="photo">
+                                    <img src=@avatar />
+
+                                </div>
+
+                                <a data-toggle="collapse" href="#collapseExample" class="collapsed">
+                                    <span>
+                                        @name <br />
+                                        @role
+                                        <b class="caret"></b>
+                                    </span>
+                                </a>
+                                <div class="clearfix"></div>
+
+
+                            </div>
+                        </div>
+                    }
+                }
+                <ul class="nav">
+                    <li>
+                        <a href=@Url.Action("Index","Home")>
+                            <i class="ti-home"></i>
+                            <p>
+                                Home Dashboard
+                            </p>
+                        </a>
+                    </li>
+                    <li>
+                        <a data-toggle="collapse" href="#componentsExamples">
+                            <i class="ti-agenda"></i>
+                            <p>
+                                Projects
+                                <b class="caret"></b>
+                            </p>
+                        </a>
+                        <div class="collapse" id="componentsExamples">
+                            <ul class="nav">
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a href="" data-toggle="modal" data-target="#modalCreateProject">
+                                            <span class="sidebar-mini">C</span>
+                                            <span class="sidebar-normal">Create Project</span>
+                                        </a>
+                                    </li>
+                                }
+                                <li id="pindexlist">
+                                    <a href=@Url.Action("Index", "Projects")>
+                                        <span class="sidebar-mini">P</span>
+                                        <span class="sidebar-normal">Project Index</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a data-toggle="collapse" href="#Tickets">
+                            <i class="ti-notepad"></i>
+                            <p>
+                                Tickets
+                                <b class="caret"></b>
+                            </p>
+                        </a>
+                        <div class="collapse" id="Tickets">
+                            <ul class="nav">
+                                @if (User.IsInRole("Submitter"))
+                                {
+                                    <li>
+                                        <a a href="" data-toggle="modal" data-target="#modalCreateTicket">
+                                            <span class="sidebar-mini">C</span>
+                                            <span class="sidebar-normal">Create New</span>
+                                        </a>
+                                    </li>
+                                }
+                                <li>
+                                    <a href=@Url.Action("Index","Tickets")>
+                                        <span class="sidebar-mini">T</span>
+                                        <span class="sidebar-normal">Ticket Index</span>
+                                    </a>
+                                </li>
+                                @if (User.IsInRole("Developer") || User.IsInRole("Submitter"))
+                                {
+                                    switch (userRolesHelper.ListUserRole())
+                                    {
+                                        case "Developer":
+                                            <li>
+                                                <a href=@Url.Action("GetAssignedTickets", "Tickets")>
+                                                    <span class="sidebar-mini">M</span>
+                                                    <span class="sidebar-normal">My Tickets</span>
+                                                </a>
+                                            </li>
+                                            break;
+                                        case "Submitter":
+                                            <li>
+                                                <a href=@Url.Action("GetSubmittedTickets", "Tickets")>
+                                                    <span class="sidebar-mini">M</span>
+                                                    <span class="sidebar-normal">My Tickets</span>
+                                                </a>
+                                            </li>
+                                            break;
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </li>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li>
+                            <a data-toggle="collapse" href="#tablesExamples">
+                                <i class="ti-user"></i>
+                                <p>
+                                    Roles
+                                    <b class="caret"></b>
+                                </p>
+                            </a>
+                            <div class="collapse" id="tablesExamples">
+                                <ul class="nav">
+                                    <li>
+                                        <a href="" data-toggle="modal" data-target="#modalUserRoles">
+                                            <span class="sidebar-mini"><i class="ti-id-badge"></i></span>
+                                            <span class="sidebar-normal">User Roles Modal</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    }
+                    <li class="text-center">
+                        @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <a class="btn btn-danger logoff-holder" href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
+                        }
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="main-panel">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <div class="navbar-minimize">
+                        <button id="minimizeSidebar" class="btn btn-fill btn-icon"><i class="ti-more-alt"></i></button>
+                    </div>
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar bar1"></span>
+                            <span class="icon-bar bar2"></span>
+                            <span class="icon-bar bar3"></span>
+                        </button>
+                    </div>
+                    <div class="collapse navbar-collapse">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="dropdown">
+                                <a href="#notifications" class="dropdown-toggle btn-rotate" data-toggle="dropdown">
+                                    <i class="ti-bell"></i>
+                                    <span class="notification">@user.Notifications.Count</span>
+                                    <p class="hidden-md hidden-lg">
+                                        Notifications
+                                        <b class="caret"></b>
+                                    </p>
+                                </a>
+                                <ul class="dropdown-menu">
+
+                                    @foreach (var notif in user.Notifications.Where(n => n.IsRead == false))
+                                    {
+                                        var message = notif.Message;
+                                        var date = notif.Created.ToString("MMM dd, yyyy");
+
+                                        <li><a class="notifClick" id=@notif.Id data-body="@message" data-created="@date" >@notif.Message, Date: @notif.Created.ToString("MMM dd, yyyy")</a></li>
+                                    }
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="content">
+                <div class="container-fluid">
+                    @RenderBody()
+                </div>
+            </div>
+            <footer class="footer">
+                <div class="container-fluid">
+                    <nav class="pull-left">
+                        <ul>
+                            <li>
+                                <a href="https://www.xabv.net/">
+                                    xaBv 2020
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://xabvlog.azurewebsites.net/">
+                                    Blog
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </footer>
+        </div>
     </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+
+    <!--   Core JS Files. Extra: TouchPunch for touch library inside jquery-ui.min.js   -->
+    <script src="~/Scripts/js/jquery.min.js" type="text/javascript"></script>
+    <script src="~/Scripts/js/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="~/Scripts/js/perfect-scrollbar.min.js" type="text/javascript"></script>
+    <script src="~/Scripts/js/bootstrap.min.js" type="text/javascript"></script>
+
+    <!--  Forms Validations Plugin -->
+    <script src="~/Scripts/js/jquery.validate.min.js"></script>
+
+    <!-- Promise Library for SweetAlert2 working on IE -->
+    <script src="~/Scripts/js/es6-promise-auto.min.js"></script>
+
+    <!--  Plugin for Date Time Picker and Full Calendar Plugin-->
+    <script src="~/Scripts/js/moment.min.js"></script>
+
+    <!--  Date Time Picker Plugin is included in this js file -->
+    <script src="~/Scripts/js/bootstrap-datetimepicker.js"></script>
+
+    <!--  Select Picker Plugin -->
+    <script src="~/Scripts/js/bootstrap-selectpicker.js"></script>
+
+    <!--  Switch and Tags Input Plugins -->
+    <script src="~/Scripts/js/bootstrap-switch-tags.js"></script>
+
+    <!-- Circle Percentage-chart -->
+    <script src="~/Scripts/js/jquery.easypiechart.min.js"></script>
+
+    <!--  Charts Plugin -->
+    <script src="~/Scripts/js/chartist.min.js"></script>
+
+    <!--  Notifications Plugin    -->
+    <script src="~/Scripts/js/bootstrap-notify.js"></script>
+
+    <!-- Sweet Alert 2 plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+    <!-- Vector Map plugin -->
+    <script src="~/Scripts/js/jquery-jvectormap.js"></script>
+
+    <!--  Google Maps Plugin    -->
+    @*
+        <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>*@
+
+    <!-- Wizard Plugin    -->
+    <script src="~/Scripts/js/jquery.bootstrap.wizard.min.js"></script>
+
+    <!--  Bootstrap Table Plugin    -->
+    <script src="~/Scripts/js/bootstrap-table.js"></script>
+
+    <!--  Plugin for DataTables.net  -->
+    <script src="~/Scripts/js/jquery.datatables.js"></script>
+
+    <!--  Full Calendar Plugin    -->
+    <script src="~/Scripts/js/fullcalendar.min.js"></script>
+
+    <!-- Paper Dashboard PRO Core javascript and methods for Demo purpose -->
+    <script src="~/Scripts/js/paper-dashboard.js"></script>
+
+    <!--Bootstrap Toggle-->
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+    <!-- My Custom JS-->
+    <script src="~/Scripts/js/custom.js"></script>
+    <script>
+        $('.notifClick').on("click", function () {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-primary',
+                    cancelButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+            })
+
+            let bodyText = $(this).data('body');
+            let bodyDate = $(this).data('created');
+            var buttonBody = bodyText.concat(' Date: ', bodyDate);
+
+            swalWithBootstrapButtons.fire({
+                title: 'Manage Notification',
+                text: buttonBody,
+                icon: 'info',
+                width: 1000,
+                showCancelButton: true,
+                confirmButtonText: 'Delete this message',
+                cancelButtonText: 'Mark as Read',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.value) {
+                    $(this).closest('li').remove();
+                    $(this).remove();
+                    var formData = new FormData();
+                    formData.append("Id", this.id);
+                    formData.append("Purpose", "delete")
+            var url = '@Url.Action("ManageNotifications","Tickets")'
+            $.ajax({
+                url: url,
+                type: 'POST',
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: formData,
+                success: function (response) {
+                    swalWithBootstrapButtons.fire(
+                        'Deleted!',
+                        response,
+                        'success'
+                    )
+                }
+            });
+                } else if (
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    $(this).closest('li').remove();
+                    $(this).remove();
+                    var formData = new FormData();
+                    formData.append("Id", this.id);
+                    formData.append("Purpose", "read")
+            var url = '@Url.Action("ManageNotifications","Tickets")'
+            $.ajax({
+                url: url,
+                type: 'POST',
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: formData,
+                success: function (response) {
+                    swalWithBootstrapButtons.fire(
+                        'Marked as read!',
+                        response,
+                        'success'
+                    )
+                }
+            });
+                }
+            })
+        });
+    </script>
+    @RenderSection("scripts", false)
 </body>
 </html>

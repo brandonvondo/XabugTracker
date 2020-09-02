@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -45,7 +44,49 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.3\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.3\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.3\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=3.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Owin, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.1.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.4.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.4.1.0\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Facebook, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Facebook.4.1.0\lib\net45\Microsoft.Owin.Security.Facebook.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Google, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Google.4.1.0\lib\net45\Microsoft.Owin.Security.Google.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.MicrosoftAccount, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.MicrosoftAccount.4.1.0\lib\net45\Microsoft.Owin.Security.MicrosoftAccount.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.4.1.0\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Twitter, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Twitter.4.1.0\lib\net45\Microsoft.Owin.Security.Twitter.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Data" />
@@ -101,9 +142,6 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
       <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
@@ -120,47 +158,11 @@
     <Reference Include="EntityFramework.SqlServer">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AspNet.Identity.Core">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.2\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNet.Identity.Owin">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.2\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNet.Identity.EntityFramework">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.2\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
-    </Reference>
     <Reference Include="Owin">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin">
-      <HintPath>..\packages\Microsoft.Owin.4.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Host.SystemWeb">
-      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Security">
-      <HintPath>..\packages\Microsoft.Owin.Security.4.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Security.Cookies">
-      <HintPath>..\packages\Microsoft.Owin.Security.Facebook.4.0.1\lib\net45\Microsoft.Owin.Security.Facebook.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Owin.Security.Cookies">
       <HintPath>..\packages\Microsoft.Owin.Security.Cookies.4.0.1\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Security.Google">
-      <HintPath>..\packages\Microsoft.Owin.Security.Google.4.0.1\lib\net45\Microsoft.Owin.Security.Google.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Security.Twitter">
-      <HintPath>..\packages\Microsoft.Owin.Security.Twitter.4.0.1\lib\net45\Microsoft.Owin.Security.Twitter.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Security.MicrosoftAccount">
-      <HintPath>..\packages\Microsoft.Owin.Security.MicrosoftAccount.4.0.1\lib\net45\Microsoft.Owin.Security.MicrosoftAccount.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Security.OAuth">
-      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.4.0.1\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
-      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -170,22 +172,35 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AssignmentsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\ProjectHistoriesController.cs" />
     <Compile Include="Controllers\ProjectsController.cs" />
     <Compile Include="Controllers\TicketAttachmentsController.cs" />
     <Compile Include="Controllers\TicketCommentsController.cs" />
-    <Compile Include="Controllers\TicketHistoriesController.cs" />
-    <Compile Include="Controllers\TicketNotificationsController.cs" />
     <Compile Include="Controllers\TicketsController.cs" />
+    <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\FileStamper.cs" />
+    <Compile Include="Helpers\HistoryHelper.cs" />
+    <Compile Include="Helpers\FileUploadValidator.cs" />
+    <Compile Include="Helpers\ImageUploadValidator.cs" />
+    <Compile Include="Helpers\ProjectHelper.cs" />
+    <Compile Include="Helpers\RoleSecurityHelper.cs" />
+    <Compile Include="Helpers\SlugMaker.cs" />
+    <Compile Include="Helpers\TicketHelper.cs" />
+    <Compile Include="Helpers\UserHelper.cs" />
+    <Compile Include="Helpers\UserRolesHelper.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\EmailModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Project.cs" />
+    <Compile Include="Models\ProjectHistory.cs" />
     <Compile Include="Models\Ticket.cs" />
     <Compile Include="Models\TicketAttachment.cs" />
     <Compile Include="Models\TicketComment.cs" />
@@ -198,16 +213,216 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="android-chrome-192x192.png" />
+    <Content Include="android-chrome-512x512.png" />
+    <Content Include="apple-touch-icon.png" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\css\bootstrap.min.css" />
+    <Content Include="Content\css\demo.css" />
+    <Content Include="Content\css\paper-dashboard.css" />
+    <Content Include="Content\css\themify-icons.css" />
+    <Content Include="Content\custom.css" />
+    <Content Include="Content\fonts\themify.svg" />
+    <Content Include="favicon-16x16.png" />
+    <Content Include="favicon-32x32.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="img\apple-icon.png" />
+    <Content Include="img\background.jpg" />
+    <Content Include="img\background\background-1.jpg" />
+    <Content Include="img\background\background-2.jpg" />
+    <Content Include="img\background\background-3.jpg" />
+    <Content Include="img\background\background-4.jpg" />
+    <Content Include="img\background\background-5.png" />
+    <Content Include="img\default.png" />
+    <Content Include="img\faces\face-0.jpg" />
+    <Content Include="img\faces\face-1.jpg" />
+    <Content Include="img\faces\face-2.jpg" />
+    <Content Include="img\faces\face-3.jpg" />
+    <Content Include="img\flags\AD.png" />
+    <Content Include="img\flags\AE.png" />
+    <Content Include="img\flags\AG.png" />
+    <Content Include="img\flags\AM.png" />
+    <Content Include="img\flags\AR.png" />
+    <Content Include="img\flags\AT.png" />
+    <Content Include="img\flags\AU.png" />
+    <Content Include="img\flags\BE.png" />
+    <Content Include="img\flags\BF.png" />
+    <Content Include="img\flags\BG.png" />
+    <Content Include="img\flags\BO.png" />
+    <Content Include="img\flags\BR.png" />
+    <Content Include="img\flags\CA.png" />
+    <Content Include="img\flags\CD.png" />
+    <Content Include="img\flags\CG.png" />
+    <Content Include="img\flags\CH.png" />
+    <Content Include="img\flags\CL.png" />
+    <Content Include="img\flags\CM.png" />
+    <Content Include="img\flags\CN.png" />
+    <Content Include="img\flags\CO.png" />
+    <Content Include="img\flags\CZ.png" />
+    <Content Include="img\flags\DE.png" />
+    <Content Include="img\flags\DJ.png" />
+    <Content Include="img\flags\DK.png" />
+    <Content Include="img\flags\DZ.png" />
+    <Content Include="img\flags\EE.png" />
+    <Content Include="img\flags\EG.png" />
+    <Content Include="img\flags\ES.png" />
+    <Content Include="img\flags\FI.png" />
+    <Content Include="img\flags\FR.png" />
+    <Content Include="img\flags\GA.png" />
+    <Content Include="img\flags\GB.png" />
+    <Content Include="img\flags\GM.png" />
+    <Content Include="img\flags\GT.png" />
+    <Content Include="img\flags\HN.png" />
+    <Content Include="img\flags\HT.png" />
+    <Content Include="img\flags\HU.png" />
+    <Content Include="img\flags\ID.png" />
+    <Content Include="img\flags\IE.png" />
+    <Content Include="img\flags\IL.png" />
+    <Content Include="img\flags\IN.png" />
+    <Content Include="img\flags\IQ.png" />
+    <Content Include="img\flags\IR.png" />
+    <Content Include="img\flags\IT.png" />
+    <Content Include="img\flags\JM.png" />
+    <Content Include="img\flags\JO.png" />
+    <Content Include="img\flags\JP.png" />
+    <Content Include="img\flags\KG.png" />
+    <Content Include="img\flags\KN.png" />
+    <Content Include="img\flags\KP.png" />
+    <Content Include="img\flags\KR.png" />
+    <Content Include="img\flags\KW.png" />
+    <Content Include="img\flags\KZ.png" />
+    <Content Include="img\flags\LA.png" />
+    <Content Include="img\flags\LB.png" />
+    <Content Include="img\flags\LC.png" />
+    <Content Include="img\flags\LS.png" />
+    <Content Include="img\flags\LU.png" />
+    <Content Include="img\flags\LV.png" />
+    <Content Include="img\flags\MG.png" />
+    <Content Include="img\flags\MK.png" />
+    <Content Include="img\flags\ML.png" />
+    <Content Include="img\flags\MM.png" />
+    <Content Include="img\flags\MT.png" />
+    <Content Include="img\flags\MX.png" />
+    <Content Include="img\flags\NA.png" />
+    <Content Include="img\flags\NE.png" />
+    <Content Include="img\flags\NG.png" />
+    <Content Include="img\flags\NI.png" />
+    <Content Include="img\flags\NL.png" />
+    <Content Include="img\flags\NO.png" />
+    <Content Include="img\flags\OM.png" />
+    <Content Include="img\flags\PA.png" />
+    <Content Include="img\flags\PE.png" />
+    <Content Include="img\flags\PG.png" />
+    <Content Include="img\flags\PK.png" />
+    <Content Include="img\flags\PL.png" />
+    <Content Include="img\flags\PT.png" />
+    <Content Include="img\flags\PY.png" />
+    <Content Include="img\flags\QA.png" />
+    <Content Include="img\flags\RO.png" />
+    <Content Include="img\flags\RU.png" />
+    <Content Include="img\flags\RW.png" />
+    <Content Include="img\flags\SA.png" />
+    <Content Include="img\flags\SE.png" />
+    <Content Include="img\flags\SG.png" />
+    <Content Include="img\flags\SL.png" />
+    <Content Include="img\flags\SN.png" />
+    <Content Include="img\flags\SO.png" />
+    <Content Include="img\flags\SV.png" />
+    <Content Include="img\flags\TD.png" />
+    <Content Include="img\flags\TJ.png" />
+    <Content Include="img\flags\TL.png" />
+    <Content Include="img\flags\TR.png" />
+    <Content Include="img\flags\TZ.png" />
+    <Content Include="img\flags\UA.png" />
+    <Content Include="img\flags\US.png" />
+    <Content Include="img\flags\VE.png" />
+    <Content Include="img\flags\VN.png" />
+    <Content Include="img\flags\YE.png" />
+    <Content Include="img\mask.png" />
+    <Content Include="img\new_logo.png" />
+    <Content Include="img\tables\agenda.png" />
+    <Content Include="img\tables\evernote.png" />
+    <Content Include="img\tables\stylus.jpg" />
+    <Content Include="img\tim_80x80.png" />
+    <Content Include="img\trackerlogo.png" />
+    <Content Include="img\trackerlogodashsmw.png" />
+    <Content Include="img\trackerlogodashw.png" />
+    <Content Include="img\trackerlogow.png" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="private.config" />
+    <Content Include="Content\css\.DS_Store" />
+    <Content Include="Content\fonts\themify.eot" />
+    <Content Include="Content\fonts\themify.ttf" />
+    <Content Include="Content\fonts\themify.woff" />
+    <Content Include="Content\sass\.DS_Store" />
+    <Content Include="Content\sass\paper-dashboard.scss" />
+    <Content Include="Content\sass\paper\mixins\_alerts.scss" />
+    <Content Include="Content\sass\paper\mixins\_buttons.scss" />
+    <Content Include="Content\sass\paper\mixins\_cards.scss" />
+    <Content Include="Content\sass\paper\mixins\_chartist.scss" />
+    <Content Include="Content\sass\paper\mixins\_icons.scss" />
+    <Content Include="Content\sass\paper\mixins\_inputs.scss" />
+    <Content Include="Content\sass\paper\mixins\_labels.scss" />
+    <Content Include="Content\sass\paper\mixins\_navbars.scss" />
+    <Content Include="Content\sass\paper\mixins\_sidebar.scss" />
+    <Content Include="Content\sass\paper\mixins\_social.scss" />
+    <Content Include="Content\sass\paper\mixins\_table-row.scss" />
+    <Content Include="Content\sass\paper\mixins\_tabs.scss" />
+    <Content Include="Content\sass\paper\mixins\_tags.scss" />
+    <Content Include="Content\sass\paper\mixins\_transparency.scss" />
+    <Content Include="Content\sass\paper\mixins\_vendor-prefixes.scss" />
+    <Content Include="Content\sass\paper\plugins\_animate.scss" />
+    <Content Include="Content\sass\paper\plugins\_bootstrap-select.scss" />
+    <Content Include="Content\sass\paper\plugins\_bootstrap-table.scss" />
+    <Content Include="Content\sass\paper\plugins\_chartist.scss" />
+    <Content Include="Content\sass\paper\plugins\_datatables.net.scss" />
+    <Content Include="Content\sass\paper\plugins\_datetime-picker.scss" />
+    <Content Include="Content\sass\paper\plugins\_fullcalendar.scss" />
+    <Content Include="Content\sass\paper\plugins\_jquery.jvectormap.scss" />
+    <Content Include="Content\sass\paper\plugins\_nouislider.scss" />
+    <Content Include="Content\sass\paper\plugins\_perfect-scrollbar.scss" />
+    <Content Include="Content\sass\paper\plugins\_sweetalert2.scss" />
+    <Content Include="Content\sass\paper\_alerts.scss" />
+    <Content Include="Content\sass\paper\_animated-buttons.scss" />
+    <Content Include="Content\sass\paper\_buttons.scss" />
+    <Content Include="Content\sass\paper\_cards.scss" />
+    <Content Include="Content\sass\paper\_carousel.scss" />
+    <Content Include="Content\sass\paper\_chat-message.scss" />
+    <Content Include="Content\sass\paper\_checkbox-radio.scss" />
+    <Content Include="Content\sass\paper\_circlechart.scss" />
+    <Content Include="Content\sass\paper\_collapse.scss" />
+    <Content Include="Content\sass\paper\_dropdown.scss" />
+    <Content Include="Content\sass\paper\_footers.scss" />
+    <Content Include="Content\sass\paper\_forms.scss" />
+    <Content Include="Content\sass\paper\_inputs.scss" />
+    <Content Include="Content\sass\paper\_labels.scss" />
+    <Content Include="Content\sass\paper\_media.scss" />
+    <Content Include="Content\sass\paper\_misc.scss" />
+    <Content Include="Content\sass\paper\_mixins.scss" />
+    <Content Include="Content\sass\paper\_modal.scss" />
+    <Content Include="Content\sass\paper\_navbars.scss" />
+    <Content Include="Content\sass\paper\_pages.scss" />
+    <Content Include="Content\sass\paper\_progress-bars.scss" />
+    <Content Include="Content\sass\paper\_responsive.scss" />
+    <Content Include="Content\sass\paper\_sidebar-and-main-panel.scss" />
+    <Content Include="Content\sass\paper\_sliders.scss" />
+    <Content Include="Content\sass\paper\_social.scss" />
+    <Content Include="Content\sass\paper\_switch.scss" />
+    <Content Include="Content\sass\paper\_tables.scss" />
+    <Content Include="Content\sass\paper\_tabs-navs-pagination.scss" />
+    <Content Include="Content\sass\paper\_tags.scss" />
+    <Content Include="Content\sass\paper\_timeline.scss" />
+    <Content Include="Content\sass\paper\_tooltips-and-popovers.scss" />
+    <Content Include="Content\sass\paper\_typography.scss" />
+    <Content Include="Content\sass\paper\_variables.scss" />
+    <None Include="Properties\PublishProfiles\xaBug - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -218,6 +433,29 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\js\bootstrap-datetimepicker.js" />
+    <Content Include="Scripts\js\bootstrap-notify.js" />
+    <Content Include="Scripts\js\bootstrap-selectpicker.js" />
+    <Content Include="Scripts\js\bootstrap-switch-tags.js" />
+    <Content Include="Scripts\js\bootstrap-table.js" />
+    <Content Include="Scripts\js\bootstrap.min.js" />
+    <Content Include="Scripts\js\chartist.min.js" />
+    <Content Include="Scripts\js\custom.js" />
+    <Content Include="Scripts\js\demo.js" />
+    <Content Include="Scripts\js\es6-promise-auto.min.js" />
+    <Content Include="Scripts\js\fullcalendar.min.js" />
+    <Content Include="Scripts\js\jquery-jvectormap.js" />
+    <Content Include="Scripts\js\jquery-ui.min.js" />
+    <Content Include="Scripts\js\jquery.bootstrap.wizard.min.js" />
+    <Content Include="Scripts\js\jquery.datatables.js" />
+    <Content Include="Scripts\js\jquery.easypiechart.min.js" />
+    <Content Include="Scripts\js\jquery.min.js" />
+    <Content Include="Scripts\js\jquery.validate.min.js" />
+    <Content Include="Scripts\js\moment.min.js" />
+    <Content Include="Scripts\js\nouislider.min.js" />
+    <Content Include="Scripts\js\paper-dashboard.js" />
+    <Content Include="Scripts\js\perfect-scrollbar.min.js" />
+    <Content Include="Scripts\js\sweetalert2.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -230,15 +468,11 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
     <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
-    <Content Include="Views\Account\ForgotPassword.cshtml" />
-    <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\ResetPassword.cshtml" />
@@ -253,15 +487,12 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Projects\Create.cshtml" />
     <Content Include="Views\Projects\Delete.cshtml" />
     <Content Include="Views\Projects\Details.cshtml" />
     <Content Include="Views\Projects\Edit.cshtml" />
     <Content Include="Views\Projects\Index.cshtml" />
-    <Content Include="Views\Tickets\Create.cshtml" />
     <Content Include="Views\Tickets\Delete.cshtml" />
-    <Content Include="Views\Tickets\Details.cshtml" />
-    <Content Include="Views\Tickets\Edit.cshtml" />
+    <Content Include="Views\Tickets\Dashboard.cshtml" />
     <Content Include="Views\Tickets\Index.cshtml" />
     <Content Include="Views\TicketAttachments\Create.cshtml" />
     <Content Include="Views\TicketAttachments\Delete.cshtml" />
@@ -283,10 +514,23 @@
     <Content Include="Views\TicketNotifications\Details.cshtml" />
     <Content Include="Views\TicketNotifications\Edit.cshtml" />
     <Content Include="Views\TicketNotifications\Index.cshtml" />
+    <Content Include="Views\Assignments\ManageRoles.cshtml" />
+    <Content Include="Views\Users\Index.cshtml" />
+    <Content Include="Views\Users\ManageUserRoles.cshtml" />
+    <Content Include="Views\Account\ResendEmailConfirmation.cshtml" />
+    <Content Include="Views\Account\ConfirmationSent.cshtml" />
+    <Content Include="Views\Account\loginph.cshtml" />
+    <Content Include="Scripts\js\.DS_Store" />
+    <Content Include="Views\Account\ForgotPassword.cshtml" />
+    <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
+    <Content Include="site.webmanifest" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Uploads\" />
+    <Folder Include="UserUploads\" />
     <Folder Include="ViewModels\" />
+    <Folder Include="Views\ProjectHistories\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -329,11 +573,12 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

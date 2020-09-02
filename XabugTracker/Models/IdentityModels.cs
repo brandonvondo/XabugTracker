@@ -12,11 +12,11 @@ namespace XabugTracker.Models
     public class ApplicationUser : IdentityUser
     {
         #region Parents/Children
-        public ICollection<Project> Projects { get; set; }
-        public ICollection<TicketAttachment> Attachments { get; set; }
-        public ICollection<TicketComment> Comments { get; set; }
-        public ICollection<TicketHistory> Histories { get; set; }
-        public ICollection<TicketNotification> Notifications { get; set; }
+        public virtual ICollection<Project> Projects { get; set; }
+        public virtual ICollection<TicketAttachment> Attachments { get; set; }
+        public virtual ICollection<TicketComment> Comments { get; set; }
+        public virtual ICollection<TicketHistory> Histories { get; set; }
+        public virtual ICollection<TicketNotification> Notifications { get; set; }
         #endregion
 
         #region Actual Properties
@@ -25,6 +25,13 @@ namespace XabugTracker.Models
         public string AvatarPath { get; set; }
         [NotMapped]
         public string FullName {
+            get
+            {
+                return $"{FirstName} {LastName}";
+            }
+        }
+        public string PFullName
+        {
             get
             {
                 return $"{LastName}, {FirstName}";
@@ -73,12 +80,12 @@ namespace XabugTracker.Models
 
         public System.Data.Entity.DbSet<XabugTracker.Models.TicketAttachment> TicketAttachments { get; set; }
 
-        public System.Data.Entity.DbSet<XabugTracker.Models.ApplicationUser> ApplicationUsers { get; set; }
-
         public System.Data.Entity.DbSet<XabugTracker.Models.TicketComment> TicketComments { get; set; }
 
         public System.Data.Entity.DbSet<XabugTracker.Models.TicketHistory> TicketHistories { get; set; }
 
         public System.Data.Entity.DbSet<XabugTracker.Models.TicketNotification> TicketNotifications { get; set; }
+
+        public System.Data.Entity.DbSet<XabugTracker.Models.ProjectHistory> ProjectHistories { get; set; }
     }
 }

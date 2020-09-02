@@ -9,9 +9,10 @@ namespace XabugTracker.Models
     {
         public int Id { get; set; }
         #region Parents/Children
-        public ICollection<Ticket> Tickets { get; set; }
-
-        public ICollection<ApplicationUser> Users { get; set; }
+        public virtual ICollection<Ticket> Tickets { get; set; }
+        public string ManagerId { get; set; }
+        public virtual ICollection<ApplicationUser> Users { get; set; }
+        public virtual ICollection<ProjectHistory> PHistory { get; set; }
         #endregion
 
         #region Actual Properties
@@ -25,6 +26,7 @@ namespace XabugTracker.Models
         {
             Tickets = new HashSet<Ticket>();
             Users = new HashSet<ApplicationUser>();
+            PHistory = new HashSet<ProjectHistory>();
         }
         #endregion
 

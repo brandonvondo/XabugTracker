@@ -1,0 +1,496 @@
+﻿@model XabugTracker.Models.Ticket
+@using XabugTracker.Helpers;
+@using Microsoft.AspNet.Identity;
+@{
+    string prio = "prio-" + Model.TicketPriority.Name;
+    UserHelper userHelper = new UserHelper();
+    TicketHelper ticketHelper = new TicketHelper();
+    var managerProj = userHelper.GetUserById(Model.Project.ManagerId);
+}
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".main-panel").css("background-color", "gainsboro");
+    });
+</script>
+@if (User.IsInRole("Submitter") && (User.Identity.GetUserId() == Model.SubmitterId))
+{
+    <div class="modal fade" id="modalEditTicket" tabindex="-1" role="dialog" aria-labelledby="EditTicketQ"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title w-100 font-weight-bold">Edit the Ticket</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body mx-3">
+                    @using (Html.BeginForm("Edit", "Tickets", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                    <div class="form-horizontal">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.Id)
+                        @Html.HiddenFor(model => model.ProjectId)
+                        @Html.HiddenFor(model => model.Created)
+                        @Html.HiddenFor(model => model.SubmitterId)
+                        @Html.HiddenFor(model => model.TicketStatusId)
+                        @Html.HiddenFor(model => model.TicketPriority)
+                        @Html.HiddenFor(model => model.TicketStatus)
+                        @Html.HiddenFor(model => model.TicketType)
+                        @Html.HiddenFor(model => model.DeveloperId)
+                        <div class="form-group">
+                            @Html.Label("Title", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Issue, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label("Description", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                <textarea name="IssueDescription" id="IssueDescription" class="form-control" placeholder="Min length 10" minLength="10" rows="4">@Model.IssueDescription</textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label("Ticket Priority", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.DropDownList("TicketPriorityId", null, htmlAttributes: new { @class = "form-control dropdown-toggle", data_toggle = "dropdown" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label("Ticket Type", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.DropDownList("TicketTypeId", null, htmlAttributes: new { @class = "form-control dropdown-toggle", data_toggle = "dropdown" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Edit" class="btn btn-default" />
+                            </div>
+                        </div>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@if (User.IsInRole("Developer") && (User.Identity.GetUserId() == Model.DeveloperId))
+{
+    <div class="modal fade" id="modalEditTicketD" tabindex="-1" role="dialog" aria-labelledby="EditTicketDQ"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title w-100 font-weight-bold">Edit the Ticket Priority/ Type</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body mx-3">
+                    @using (Html.BeginForm("Edit", "Tickets", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                    <div class="form-horizontal">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.Id)
+                        @Html.HiddenFor(model => model.ProjectId)
+                        @Html.HiddenFor(model => model.Created)
+                        @Html.HiddenFor(model => model.SubmitterId)
+                        @Html.HiddenFor(model => model.TicketStatusId)
+                        @Html.HiddenFor(model => model.TicketPriority)
+                        @Html.HiddenFor(model => model.TicketStatus)
+                        @Html.HiddenFor(model => model.TicketType)
+                        @Html.HiddenFor(model => model.Issue)
+                        @Html.HiddenFor(model => model.IssueDescription)
+                        @Html.HiddenFor(model => model.DeveloperId)
+                    </div>
+
+                        <div class="form-group">
+                            @Html.Label("Ticket Priority", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.DropDownList("TicketPriorityId", null, htmlAttributes: new { @class = "form-control dropdown-toggle", data_toggle = "dropdown" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label("Ticket Type", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.DropDownList("TicketTypeId", null, htmlAttributes: new { @class = "form-control dropdown-toggle", data_toggle = "dropdown" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Edit" class="btn btn-default" />
+                            </div>
+                        </div>
+
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+@if ((User.IsInRole("Project Manager") && (User.Identity.GetUserId() == Model.Project.ManagerId)) || (User.IsInRole("Admin")))
+{
+<div class="modal fade" id="modalAssignDev" tabindex="-1" role="dialog" aria-labelledby="AssignDevQ"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100 font-weight-bold">Assign a Developer</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body mx-3">
+                @using (Html.BeginForm("AssignDev", "Tickets", FormMethod.Post))
+                {
+                    string oldDev = Model.DeveloperId;
+                    @Html.AntiForgeryToken()
+                <div class="form-horizontal">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.Id)
+                    <input type="hidden" id="oldDev" name="oldDev" value=@oldDev >
+                    <div class="form-group">
+                        @Html.Label("Developers", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.DropDownList("DeveloperIds", null, htmlAttributes: new { @class = "form-control dropdown-toggle", data_toggle = "dropdown" })
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Assign" class="btn btn-default" />
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+<div class="container-fluid">
+    <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+        <li class="active"><a href="#dashboard" data-toggle="tab">Dashboard</a></li>
+        @if (ticketHelper.CanUserInteract(Model.Id))
+        {
+            <li><a href="#comments" data-toggle="tab">Ticket Comments</a></li>
+            <li><a href="#attachments" data-toggle="tab">Ticket Attachments</a></li>
+        }
+            <li><a href="#history" data-toggle="tab">Ticket History</a></li>
+        </ul>
+    <p class="text-right">
+        @if (User.IsInRole("Submitter") && (User.Identity.GetUserId() == Model.SubmitterId))
+        {<a class="btn btn-primary" data-toggle="modal" data-target="#modalEditTicket">Edit This Ticket</a>}
+        @if (User.IsInRole("Developer") && (User.Identity.GetUserId() == Model.DeveloperId))
+        {<a class="btn btn-primary" data-toggle="modal" data-target="#modalEditTicketD">Edit This Ticket</a>}
+        <a class="btn btn-primary padleft" href=@Url.Action("Index")>Back To Ticket List</a>
+    </p>
+    <hr />
+
+    <div id="my-tab-content" class="tab-content text-center">
+        <div class="tab-pane active" id="dashboard">
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="card">
+                        <div class="row">
+                            <div class="card-header">
+                                <div class="col-sm-6 col-md-6">
+                                    <h1 class="card-title text-center issuepad">@Model.Issue</h1>
+                                    <hr />
+                                </div>
+                                <div class="col-sm-6 col-md-6">
+                                    <h3 class="card-title">Priority: <span id=@prio class="priospan">@Model.TicketPriority.Name</span></h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="card-content">
+                                <div class="col-sm-6 col-md-6">
+                                    <p class="text-center issuepad">@Model.IssueDescription</p>
+                                </div>
+                                <div class="col-sm-6 col-md-6">
+                                    <div class="row text-center">
+                                        <p>Created: @Model.Created.ToString("MMM dd, yyyy")</p>
+                                        <p>Status: @Model.TicketStatus.Name</p>
+                                    </div>
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <div class="row">
+                                        @if (Model.DeveloperId != null)
+                                        {
+                                            var devUser = userHelper.GetUserById(Model.DeveloperId);
+                                            <div class="row">
+                                                @if (User.IsInRole("Admin") || (User.IsInRole("Project Manager") && (User.Identity.GetUserId() == Model.Project.ManagerId)))
+                                                {<a class="btn btn-primary" data-toggle="modal" data-target="#modalAssignDev">Assign A Developer</a>}
+                                            </div>
+                                            <hr />
+                                            <div class="row">
+                                                <div class="col-md-6 text-center">
+                                                    <h3 class="card-title">Ticket Developer</h3>
+                                                </div>
+                                                <div class="col-md-6 text-center">
+                                                    <div class="photo">
+                                                        <img class="managepic" src=@devUser.AvatarPath />
+                                                    </div>
+                                                    <h6 class="managename text-center">@devUser.FirstName <br /> @devUser.LastName</h6>
+                                                    <br />
+                                                    <br />
+                                                    <br />
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col-md-12">
+                                                @if (User.IsInRole("Admin") || (User.IsInRole("Project Manager") && (User.Identity.GetUserId() == Model.Project.ManagerId)))
+                                                {<a class="btn btn-primary" data-toggle="modal" data-target="#modalAssignDev">Assign A Developer</a>}
+                                                <h6 class="card-title text-center">This project is missing a developer.</h6> <br />
+
+                                                <br />
+                                                <br />
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-4 col-md-offset-1 text-center">
+                    <h4>
+                        Project: '@Model.Project.Name'
+                    </h4>
+                    <br />
+                    <img src=@managerProj.AvatarPath class="managepic" />
+                    <h6 class="managename">
+                        Managed by @managerProj.FullName
+                    </h6>
+                    @Html.ActionLink("Back to Project", "Details", "Projects", new { id = Model.ProjectId }, htmlAttributes: new { @class = "text-right linktext" })
+                </div>
+            </div>
+        </div>
+        @if (ticketHelper.CanUserInteract(Model.Id))
+        {
+            <div class="tab-pane" id="comments">
+                <div class="card">
+                    <div class="card-content">
+                        @using (Html.BeginForm("Create", "TicketComments", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <div class="form-horizontal">
+                                <h4>Ticket Comments</h4>
+                                <hr />
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                @Html.Hidden("TicketId", Model.Id)
+
+                                <div class="form-group">
+                                    <div class="col-md-offset-4 col-md-4">
+                                        <textarea name="Comment" id="Comment" class="form-control" placeholder="Sample comment body." minLength="10" rows="4"></textarea>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <div class="col-md-offset-4 col-md-4">
+                                        <input type="submit" value="Create" class="btn btn-default btn-wide" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <br />
+                <div class="card">
+                    <div class="card-content">
+                        @if (Model.Comments.Count == 0)
+                        {
+                            <h4>No Comments Yet</h4>
+                        }
+                        else
+                        {
+                            foreach (var comment in Model.Comments.OrderByDescending(c => c.Created))
+                            {
+                                <div class="container commentbox">
+                                    <div class="row">
+                                        <div class="col-xs-6 text-center">Created By: @comment.User.FullName</div>
+                                        <div class="col-xs-6 text-center">Creation Date:@comment.Created.ToString("dd MMM yyyy")</div>
+                                    </div>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-xs-12 text-left">Comment Body: @comment.Comment</div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="attachments">
+                <div class="tab-pane" id="comments">
+                    <div class="card">
+                        <div class="card-content">
+                            @using (Html.BeginForm("Create", "TicketAttachments", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                            {
+                                @Html.AntiForgeryToken()
+
+                            <div class="form-horizontal">
+                                <h4>Ticket Attachments</h4>
+                                <hr />
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                @Html.Hidden("TicketId", Model.Id)
+
+                                <div class="form-group">
+                                    @Html.Label("File Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.Editor("FileName", new { htmlAttributes = new { @class = "form-control" } })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.Label("Attachment", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        <input type="file" name="File" id="File" />
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <div class="col-md-offset-4 col-md-4">
+                                        <input type="submit" value="Add Attachment" class="btn btn-default btn-wide" />
+                                    </div>
+                                </div>
+                            </div>
+                            }
+                        </div>
+                    </div>
+                    <br />
+                    <div class="card">
+                        <div class="card-content">
+                            @if (Model.Attachments.Count == 0)
+                            {
+                                <h4>No Comments Yet</h4>
+                            }
+                            else
+                            {
+                        <div class="table-responsive">
+                            <table id="usertable" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayName("Icon")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("Title")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("File Name")
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var attachment in Model.Attachments.OrderByDescending(h => h.Created))
+                                    {
+                                        <tr>
+                                            <td>
+                                                ph
+                                            </td>
+                                            <td>
+                                                @attachment.FileName
+                                            </td>
+                                            <td>
+                                                <a target="_blank" href=@attachment.FilePath>@attachment.FilePath</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                                }
+                        </div>
+                    </div>
+                </div>           
+            </div>
+        }
+            <div class="tab-pane" id="history">
+                <div class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-8 col-lg-offset-2">
+                                <div class="card smallcard">
+
+                                    <h2 class="card-header">Project History</h2>
+                                    <div class="card-content">
+                                        @if (Model.Comments.Count == 0)
+                                        {
+                                            <h4>No Changes</h4>
+                                        }
+                                        else
+                                        {
+                                            <div class="table-responsive">
+                                                <table id="usertable" class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>
+                                                                @Html.DisplayName("Changed By")
+                                                            </th>
+                                                            <th>
+                                                                @Html.DisplayName("Property")
+                                                            </th>
+                                                            <th>
+                                                                @Html.DisplayName("Old Value")
+                                                            </th>
+                                                            <th>
+                                                                @Html.DisplayName("New Value")
+                                                            </th>
+                                                            <th>
+                                                                @Html.DisplayName("Changed On")
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var entry in Model.Histories.OrderByDescending(h => h.Changedon))
+                                                        {
+                                                            <tr>
+                                                                <td>
+                                                                    @entry.User.FullName
+                                                                </td>
+                                                                <td>
+                                                                    @entry.Property
+                                                                </td>
+                                                                <td>
+                                                                    @entry.OldValue
+                                                                </td>
+                                                                <td>
+                                                                    @entry.NewValue
+                                                                </td>
+                                                                <td>
+                                                                    @entry.Changedon.ToString("MMM dd, yyyy")
+                                                                </td>
+                                                            </tr>
+                                                    }
+                                                        </tbody>
+                                                    </table>
+                                            </div>
+                                        }
+
+                                    </div>
+                                </div><!--  end card  -->
+                            </div> <!-- end col-md-12 -->
+                        </div> <!-- end row -->
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>

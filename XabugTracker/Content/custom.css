@@ -1,0 +1,171 @@
+﻿.sortbool {
+    visibility: hidden;
+}
+
+.toggle-handle:hover {
+    color: #333 !important;
+    background-color: #fff !important;
+    border-color: #ccc !important;
+}
+
+.toggle-handle {
+    color: #333 !important;
+    background-color: #fff !important;
+    border-color: #ccc !important;
+}
+
+.nav-tabs {
+    overflow: hidden;
+}
+
+.tab {
+    border: 1px solid #ccc !important;
+}
+
+.tab a {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+}
+
+    .tab a:hover {
+        background-color: #ddd;
+    }
+
+    .tab a.active {
+        background-color: #ccc;
+    }
+
+    .card-body {
+        padding: 10px;
+    }
+
+.card-tikbtn {
+    background: #c8c9bb;
+    margin-right: 40px;
+}
+
+    .card-tikbtn:hover {
+        background: #7a7a74;
+    }
+
+.priospan {
+    color: #fff;
+    background-color: #212631;
+    padding: 0px 5px;
+    font-weight: 300;
+    border-radius: 2px;
+}
+
+#prio-Low {
+    background-color: lawngreen;
+}
+
+#prio-Medium {
+    background-color: darkorange;
+}
+
+#prio-High {
+    background-color: red;
+}
+
+.managepic {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #C6C6C6;
+    float: left;
+}
+
+.managename {
+    float: left;
+    padding-left:10px;
+}
+
+.entry {
+    font-size: 20px;
+    border-top: 1px solid #ccc;
+    padding-left: 20px;
+}
+
+.smallcard {
+    max-height: 70vh;
+    overflow-y: scroll;
+}
+
+.issuepad {
+    padding-left: 30px;
+}
+
+.linktext {
+    font-size: 0.9em;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #A49E93;
+}
+
+    .linktext:hover {
+        color: #535353;
+    }
+
+.demo_button {
+    width: 90%;
+    margin: 10px auto;
+    font-family: 'Muli', "Helvetica", Arial, sans-serif;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.logoff-holder {
+    font-family: 'Muli', "Helvetica", Arial, sans-serif;
+    text-transform: uppercase;
+    width: 80%;
+    margin: 10px auto;
+    font-weight: bold;
+    color: #D1CFCD;
+}
+
+
+.logoff-holder:hover {
+    color: white;
+}
+
+#Google {
+    font-family: 'Muli', "Helvetica", Arial, sans-serif;
+    text-transform: uppercase;
+    width: 80%;
+    margin: 10px auto;
+    font-weight: bold;
+    color: white;
+    background-color: cornflowerblue
+}
+
+#Google:hover {
+    color: white;
+}
+
+.btn-roles {
+    margin-top: 20px;
+    margin-left: 15px;
+}
+
+.tablecardpad {
+    padding: 15px 15px;
+}
+
+.btn-wide {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.commentbox {
+    padding: 20px 20px;
+    border-top: 1px solid #ccc;
+}
+
+.padleft{
+    margin-left:20px;
+}
