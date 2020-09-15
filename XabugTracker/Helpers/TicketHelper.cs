@@ -14,6 +14,7 @@ namespace XabugTracker.Helpers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private ProjectHelper projectHelper = new ProjectHelper();
+        private UserRolesHelper userRolesHelper = new UserRolesHelper();
 
         public void ManageTicketNotifications(Ticket oldTicket, Ticket newTicket)
         {

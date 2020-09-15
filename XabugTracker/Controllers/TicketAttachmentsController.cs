@@ -18,13 +18,7 @@ namespace XabugTracker.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private FileStamper fileStamper = new FileStamper();
-
-        // GET: TicketAttachments
-        public ActionResult Index()
-        {
-            var ticketAttachments = db.TicketAttachments.Include(t => t.Ticket).Include(t => t.User);
-            return View(ticketAttachments.ToList());
-        }
+        private ProjectHelper projectHelper = new ProjectHelper();
 
         // GET: TicketAttachments/Details/5
         public ActionResult Details(int? id)
@@ -41,14 +35,6 @@ namespace XabugTracker.Controllers
             return View(ticketAttachment);
         }
 
-        // GET: TicketAttachments/Create
-        public ActionResult Create()
-        {
-            ViewBag.TicketId = new SelectList(db.Tickets, "Id", "SubmitterId");
-            ViewBag.UserId = new SelectList(db.Users, "Id", "FirstName");
-            return View();
-        }
-
         // POST: TicketAttachments/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
@@ -56,30 +42,36 @@ namespace XabugTracker.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "TicketId,FileName,Description")] TicketAttachment ticketAttachment, HttpPostedFileBase file)
         {
-            if (ModelState.IsValid)
+            var userId = User.Identity.GetUserId();
+            var ticket = db.Tickets.Where(t => t.Id == ticketAttachment.TicketId).FirstOrDefault();
+            if (projectHelper.IsUserOnProject(userId, ticket.ProjectId))
             {
-                ticketAttachment.Created = DateTime.Now;
-                ticketAttachment.UserId = User.Identity.GetUserId();
-                if(file == null)
+                if (ModelState.IsValid)
                 {
-                    TempData["Error"] = "You must supply a file!";
-                    return RedirectToAction("Dashboard", "Tickets", new { id = ticketAttachment.Id });
-                }
+                    ticketAttachment.Created = DateTime.Now;
+                    ticketAttachment.UserId = User.Identity.GetUserId();
+                    if (file == null)
+                    {
+                        TempData["Error"] = "You must supply a file!";
+                        return RedirectToAction("Dashboard", "Tickets", new { id = ticketAttachment.Id });
+                    }
 
-                if(ImageUploadValidator.IsWebFriendlyImage(file) || FileUploadValidator.IsWebFriendlyFile(file))
-                {
-                    var fileName = fileStamper.MakeUnique(file.FileName);
-                    ticketAttachment.FileName = fileName;
-                    file.SaveAs(Path.Combine(Server.MapPath("~/UserUploads/"), fileName));
-                    ticketAttachment.FilePath = "/UserUploads/" + fileName;
-                }
+                    if (ImageUploadValidator.IsWebFriendlyImage(file) || FileUploadValidator.IsWebFriendlyFile(file))
+                    {
+                        var fileName = fileStamper.MakeUnique(file.FileName);
+                        ticketAttachment.FileName = fileName;
+                        file.SaveAs(Path.Combine(Server.MapPath("~/UserUploads/"), fileName));
+                        ticketAttachment.FilePath = "/UserUploads/" + fileName;
+                    }
 
-                db.TicketAttachments.Add(ticketAttachment);
-                db.SaveChanges();
+                    db.TicketAttachments.Add(ticketAttachment);
+                    db.SaveChanges();
+                    return RedirectToAction("Dashboard", "Tickets", new { id = ticketAttachment.TicketId });
+                }
+                TempData["Error"] = "The model was invalid.";
                 return RedirectToAction("Dashboard", "Tickets", new { id = ticketAttachment.TicketId });
             }
 
-            TempData["Error"] = "The model was invalid.";
             return RedirectToAction("Dashboard", "Tickets", new { id = ticketAttachment.TicketId });
         }
 

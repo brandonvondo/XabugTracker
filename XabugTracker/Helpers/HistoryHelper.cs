@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Configuration;
 using XabugTracker.Models;
 
 namespace XabugTracker.Helpers
@@ -52,7 +53,7 @@ namespace XabugTracker.Helpers
         public void DeveloperUpdate(string oldDev, string newDev, int Id)
         {
             var oldDevName = "";
-            if (oldDev != null)
+            if (oldDev != null && oldDev != "")
             {
                 oldDevName = userHelper.GetFullName(oldDev);
             }

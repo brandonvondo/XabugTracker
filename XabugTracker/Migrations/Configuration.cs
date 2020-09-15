@@ -18,6 +18,8 @@ namespace XabugTracker.Migrations
         HistoryHelper historyHelper = new HistoryHelper();
         ProjectHelper projectHelper = new ProjectHelper();
         TicketHelper ticketHelper = new TicketHelper();
+        NameMaker nm = new NameMaker();
+        SeedHelper seedHelper = new SeedHelper();
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
@@ -59,8 +61,6 @@ namespace XabugTracker.Migrations
             var demoProjectManagerEmail = WebConfigurationManager.AppSettings["DemoProjectManagerEmail"];
             var defaultAvatarPath = WebConfigurationManager.AppSettings["DefaultAvatarPath"];
 
-            List<string> FirstNames = new List<string>() { "John", "Jacob", "David", "Anya", "Susan", "Joseph", "Jim", "Alex", "PJ", "Abigail", "Chase", "Adriene", "Eddy", "Martel", "Elizabeth", "Patricia", "Scout", "Drew", "Ed", "Ash", "Thomas", "Matt" };
-            List<string> LastNames = new List<string>() { "Smith", "Jones", "Brown", "Wilson", "Hill", "Scott", "Cook", "Ross", "Perry", "Powell", "Rivera", "Long", "White", "Garcia", "Gray", "Foster", "Moore", "Campbell", "Walker", "Collins", "Diaz", "Russell", "Griffin" };
 
 
 
@@ -71,8 +71,8 @@ namespace XabugTracker.Migrations
                     Email = demoAdminEmail,
                     AvatarPath = defaultAvatarPath,
                     UserName = demoAdminEmail,
-                    FirstName = FirstNames[random.Next(FirstNames.Count)],
-                    LastName = LastNames[random.Next(LastNames.Count)]
+                    FirstName = nm.FirstNameGenerate(),
+                    LastName = nm.LastNameGenerate()
                 }, demoPassword);
 
                 var userID = userManager.FindByEmail(demoAdminEmail).Id;
@@ -87,8 +87,8 @@ namespace XabugTracker.Migrations
                     Email = demoDeveloperEmail,
                     AvatarPath = defaultAvatarPath,
                     UserName = demoDeveloperEmail,
-                    FirstName = FirstNames[random.Next(FirstNames.Count)],
-                    LastName = LastNames[random.Next(LastNames.Count)]
+                    FirstName = nm.FirstNameGenerate(),
+                    LastName = nm.LastNameGenerate()
                 }, demoPassword);
 
                 var userID = userManager.FindByEmail(demoDeveloperEmail).Id;
@@ -103,8 +103,8 @@ namespace XabugTracker.Migrations
                     Email = demoSubmitterEmail,
                     AvatarPath = defaultAvatarPath,
                     UserName = demoSubmitterEmail,
-                    FirstName = FirstNames[random.Next(FirstNames.Count)],
-                    LastName = LastNames[random.Next(LastNames.Count)]
+                    FirstName = nm.FirstNameGenerate(),
+                    LastName = nm.LastNameGenerate()
                 }, demoPassword);
 
                 var userID = userManager.FindByEmail(demoSubmitterEmail).Id;
@@ -119,8 +119,8 @@ namespace XabugTracker.Migrations
                     Email = demoProjectManagerEmail,
                     AvatarPath = defaultAvatarPath,
                     UserName = demoProjectManagerEmail,
-                    FirstName = FirstNames[random.Next(FirstNames.Count)],
-                    LastName = LastNames[random.Next(LastNames.Count)]
+                    FirstName = nm.FirstNameGenerate(),
+                    LastName = nm.LastNameGenerate()
                 }, demoPassword);
 
                 var userID = userManager.FindByEmail(demoProjectManagerEmail).Id;
@@ -134,24 +134,24 @@ namespace XabugTracker.Migrations
                 var email = $"xabuguser{i}@mailinator.com";
                 if (!context.Users.Any(u => u.Email == email))
                 {
-                    var fn = FirstNames[random.Next(FirstNames.Count)];
-                    var ln = LastNames[random.Next(LastNames.Count)];
-                    var forlooppw = "PasswordPassword";
+                    var fn = nm.FirstNameGenerate();
+                    var ln = nm.LastNameGenerate();
+                    var forlooppw = demoPassword;
                     var role = "";
 
                     if (i <= 2)
                     {
                         role = "Admin";
                     }
-                    else if (i > 2 && i <= 12)
+                    else if (i > 2 && i <= 6)
                     {
                         role = "Project Manager";
                     }
-                    else if (i > 12 && i <= 24)
+                    else if (i > 6 && i <= 18)
                     {
                         role = "Submitter";
                     }
-                    else if (i > 24 && i <= 40)
+                    else if (i > 18 && i <= 40)
                     {
                         role = "Developer";
                     }
@@ -227,54 +227,51 @@ namespace XabugTracker.Migrations
             #region Assigning Users to Projects by Role
             foreach (var project in projList)
             {
+                var pmV = 0;
+                var s = 0;
+                var d = 0;
+                var adminBool = false;
                 if (project.Users.Count < 11)
                 {
-                    List<ApplicationUser> innerListP = pmList.Where(prom => prom.Projects.Count == 0).ToList();
-                    var pm = innerListP[random.Next(innerListP.Count)];
-                    projectHelper.AddUserToProject(pm.Id, project.Id);
-                    string PHmessagem = "Project Manager " + pm.FullName + " has been assigned to be the project manager";
-                    project.ManagerId = pm.Id;
-                    historyHelper.CreateProjectHistory(project.Id, PHmessagem);
-
-                    foreach (var admin in adminList)
+                    for (var m = 0; m < 4; m++)
                     {
-                        projectHelper.AddUserToProject(admin.Id, project.Id);
-                        string PHmessageA = admin.FullName + " was added to " + project.Name + " at " + DateTime.Now.ToString("MMM dd, yyyy h tt");
-                        historyHelper.CreateProjectHistory(project.Id, PHmessageA);
+                        if (pmV < 1)
+                        {
+                            List<ApplicationUser> innerListP = pmList.Where(prom => prom.Projects.Count == 0).ToList();
+                            var pm = innerListP[random.Next(innerListP.Count)];
+                            projectHelper.AddUserToProject(pm.Id, project.Id);
+                            string PHmessage = "Project Manager " + pm.FullName + " has been assigned to be the project manager";
+                            project.ManagerId = pm.Id;
+                            historyHelper.CreateProjectHistory(project.Id, PHmessage);
+                            pmV++;
+                        }
+                        if (!adminBool)
+                        {
+                            foreach (var user in adminList)
+                            {
+                                projectHelper.AddUserToProject(user.Id, project.Id);
+                                string PHmessage = user.FullName + " was added to " + project.Name + " at " + DateTime.Now.ToString("MMM dd, yyyy h tt");
+                                historyHelper.CreateProjectHistory(project.Id, PHmessage);
+                                adminBool = true;
+                            }
+                        }
+                        if (s < 2)
+                        {
+                            var user = projectHelper.UserInRoleNotOnProject(project, "Submitter");
+                            projectHelper.AddUserToProject(user.Id, project.Id);
+                            string PHmessage = user.FullName + " was added to " + project.Name + " at " + DateTime.Now.ToString("MMM dd, yyyy h tt");
+                            historyHelper.CreateProjectHistory(project.Id, PHmessage);
+                            s++;
+                        }
+                        if (d < 4)
+                        {
+                            var user = projectHelper.UserInRoleNotOnProject(project, "Developer");
+                            projectHelper.AddUserToProject(user.Id, project.Id);
+                            string PHmessage = user.FullName + " was added to " + project.Name + " at " + DateTime.Now.ToString("MMM dd, yyyy h tt");
+                            historyHelper.CreateProjectHistory(project.Id, PHmessage);
+                            d++;
+                        }
                     }
-
-                    List<ApplicationUser> innerListS = submitterList.Where(sub => sub.Projects.Contains(project) == false).ToList();
-                    var user1s = innerListS[random.Next(innerListS.Count)];
-                    projectHelper.AddUserToProject(user1s.Id, project.Id);
-                    innerListS = submitterList.Where(sub => sub.Projects.Contains(project) == false).ToList();
-                    var user2s = innerListS[random.Next(innerListS.Count)];
-                    projectHelper.AddUserToProject(user2s.Id, project.Id);
-                    string PHmessageS = user1s.FullName + " was added to " + project.Name + " at " + DateTime.Now.ToString("MMM dd, yyyy h tt");
-                    historyHelper.CreateProjectHistory(project.Id, PHmessageS);
-                    PHmessageS = user2s.FullName + " was added to " + project.Name + " at " + DateTime.Now.ToString("MMM dd, yyyy h tt");
-                    historyHelper.CreateProjectHistory(project.Id, PHmessageS);
-                    historyHelper.CreateProjectHistory(project.Id, PHmessageS);
-
-                    List<ApplicationUser> innerListD = developerList.Where(dev => dev.Projects.Contains(project) == false).ToList();
-                    var user = innerListD[random.Next(innerListD.Count)];
-                    innerListD = developerList.Where(dev => dev.Projects.Contains(project) == false).ToList();
-                    var user2 = innerListD[random.Next(innerListD.Count)];
-                    innerListD = developerList.Where(dev => dev.Projects.Contains(project) == false).ToList();
-                    var user3 = innerListD[random.Next(innerListD.Count)];
-                    innerListD = developerList.Where(dev => dev.Projects.Contains(project) == false).ToList();
-                    var user4 = innerListD[random.Next(innerListD.Count)];
-                    projectHelper.AddUserToProject(user.Id, project.Id);
-                    projectHelper.AddUserToProject(user2.Id, project.Id);
-                    projectHelper.AddUserToProject(user3.Id, project.Id);
-                    projectHelper.AddUserToProject(user4.Id, project.Id);
-                    string PHmessageD = user.FullName + " was added to " + project.Name + " at " + DateTime.Now.ToString("MMM dd, yyyy h tt");
-                    historyHelper.CreateProjectHistory(project.Id, PHmessageD);
-                    PHmessageD = user2.FullName + " was added to " + project.Name + " at " + DateTime.Now.ToString("MMM dd, yyyy h tt");
-                    historyHelper.CreateProjectHistory(project.Id, PHmessageD);
-                    PHmessageD = user3.FullName + " was added to " + project.Name + " at " + DateTime.Now.ToString("MMM dd, yyyy h tt");
-                    historyHelper.CreateProjectHistory(project.Id, PHmessageD);
-                    PHmessageD = user4.FullName + " was added to " + project.Name + " at " + DateTime.Now.ToString("MMM dd, yyyy h tt");
-                    historyHelper.CreateProjectHistory(project.Id, PHmessageD);
                 }
             }
             #endregion

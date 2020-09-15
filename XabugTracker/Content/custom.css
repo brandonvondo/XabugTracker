@@ -54,15 +54,17 @@
     }
 
 .priospan {
+    width: 71px;
     color: #fff;
     background-color: #212631;
     padding: 0px 5px;
-    font-weight: 300;
+    font-weight: 500;
     border-radius: 2px;
+    font-size: 16px;
 }
 
 #prio-Low {
-    background-color: lawngreen;
+    background-color: darkgreen;
 }
 
 #prio-Medium {
@@ -168,4 +170,8 @@
 
 .padleft{
     margin-left:20px;
+}
+
+.modal-wide{
+    width: 30vw;
 }

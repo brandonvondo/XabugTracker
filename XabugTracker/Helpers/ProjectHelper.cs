@@ -10,6 +10,8 @@ namespace XabugTracker.Helpers
     public class ProjectHelper
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private UserRolesHelper roleHelper = new UserRolesHelper();
+        private Random random = new Random();
         
 
         public void AddUserToProject(string userId, int projectId )
@@ -98,6 +100,20 @@ namespace XabugTracker.Helpers
             var user = db.Users.Find(userId);
             List<Ticket> ticks = user.Projects.SelectMany(p => p.Tickets.Where(t => t.DeveloperId == null)).ToList();
             return ticks;
+        }
+
+        public ApplicationUser UserInRoleNotOnProject(Project project, string roleName)
+        {
+            List<ApplicationUser> userList = roleHelper.UsersInRole(roleName).ToList();
+            List<ApplicationUser> refineList = new List<ApplicationUser>();
+            foreach (ApplicationUser user in userList)
+            {
+                if (!IsUserOnProject(user.Id, project.Id))
+                {
+                    refineList.Add(user);
+                }
+            }
+            return refineList[random.Next(refineList.Count)];
         }
 
 

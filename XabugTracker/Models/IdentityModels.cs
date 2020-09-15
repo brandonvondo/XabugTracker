@@ -37,6 +37,14 @@ namespace XabugTracker.Models
                 return $"{LastName}, {FirstName}";
             }
         }
+        [NotMapped]
+        public string ListName
+        {
+            get
+            {
+                return $"{FullName} [Email: {Email}]";
+            }
+        }
         #endregion
 
         #region Constructor

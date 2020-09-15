@@ -116,9 +116,9 @@
         <div class="modal fade" id="modalUserRoles" tabindex="-1" role="dialog" aria-labelledby="UserRolesQ"
              aria-hidden="true">
             <div class="modal-dialog" role="document">
-                <div class="modal-content">
+                <div class="modal-content modal-wide">
                     <div class="modal-header text-center">
-                        <h4 class="modal-title w-100 font-weight-bold">Manager Users</h4>
+                        <h4 class="modal-title w-300 font-weight-bold">Manager Users</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -127,10 +127,16 @@
                         @using (Html.BeginForm())
                         {
                             var userIds = userRolesHelper.UsersNotInRole("Admin");
-                            ViewBag.UserIds = new MultiSelectList(userIds, "Id", "Email");
+                            ViewBag.UserIds = new MultiSelectList(userIds, "Id", "ListName");
                             ViewBag.RoleName = userRolesHelper.SelectListRoles();
                             @Html.AntiForgeryToken()
-
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    Select one or more Users and select a role to apply it to them.
+                                </div>
+                                <br />
+                                <br />x
+                            </div>
                             <div class="row">
                                 <div class="col-md-8">
                                     @Html.ListBox("UserIds")

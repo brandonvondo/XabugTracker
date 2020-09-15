@@ -110,7 +110,25 @@
             $('.checkuserman').bootstrapToggle();
         });
 
+        $("[name='datatables_length']").change("value", function () {
+            $('.checkuserman').bootstrapToggle();
+        });
+
+        $("#datatables_filter input").keyup(function() {
+            $('.checkuserman').bootstrapToggle();
+        })
+
+        $('#datatables_paginate').on("click", function () {
+            $('.checkuserman').bootstrapToggle();
+        });
+
         $(".main-panel").css("background-color", "gainsboro")
+
+        $('#usertable').DataTable({
+            "paging": false,
+            "ordering": false,
+            "info": false
+        });
 
         $('.checkuserman').change(function () {
             var dataSort = $(this).data("sort")
@@ -150,7 +168,7 @@
         <li><a data-toggle="tab" class="tab" href="#menu2">Project History</a></li>
     </ul>
     <p class="text-right">
-        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) | @Html.ActionLink("Back to List", "Index")
+        <span class="logoff-holder">@Html.ActionLink("Back to List", "Index")</span>
     </p>
     <hr />
 
@@ -220,10 +238,13 @@
                                             </div>
                                         }
                                     </div>
+                                    @if (User.IsInRole("Submitter"))
+                                    {
+                                        <div class="row text-right">
+                                            <button class="btn card-tikbtn" data-toggle="modal" data-target="#modalCreateTicket">Create Ticket</button>
+                                        </div>
+                                    }
 
-                                    <div class="row text-right">
-                                        <button class="btn card-tikbtn" data-toggle="modal" data-target="#modalCreateTicket">Create Ticket</button>
-                                    </div>
                                 </div>
                                 <br />
                             </div>
@@ -231,6 +252,8 @@
                     </div>
                     <div class="col-md-4 col-md-offset-1">
                         <div class="table-responsive">
+                            @if (Model.Users.Count > 0)
+                            {
                             <table id="usertable" class="table">
                                 <thead>
                                     <tr>
@@ -242,34 +265,56 @@
                                         </th>
                                     </tr>
                                 </thead>
-                                @if (Model.Users.Count > 0)
+                                @foreach (var user in Model.Users)
                                 {
-                                    foreach (var user in Model.Users)
-                                    {
 
-                                        var roleName = roleHelper.ListUserRoles(user.Id).FirstOrDefault();
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    @user.FullName
-                                                </td>
-                                                <td>
-                                                    @roleName
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    }
+                                    var roleName = roleHelper.ListUserRoles(user.Id).FirstOrDefault();
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                @user.FullName
+                                            </td>
+                                            <td>
+                                                @roleName
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
                                 }
-                                else
-                                {
+
+                                <tfoot>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayName("Name")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("Role")
+                                        </th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            }
+                            else
+                            {
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                @Html.DisplayName("Name")
+                                            </th>
+                                            <th>
+                                                @Html.DisplayName("Role")
+                                            </th>
+                                        </tr>
+                                    </thead>
                                     <tbody>
                                         <tr>
                                             <td>There are no users on this project.</td>
                                             <td>Consider adding some in the manage users tab.</td>
                                         </tr>
                                     </tbody>
-                                }
-                            </table>
+                                </table>
+                            }
                         </div>
                     </div>
                 </div>
@@ -356,23 +401,23 @@
                                                                     devN = "Unassigned";
                                                                 }
 
-                                                            <tr>
-                                                                <td>
-                                                                    <a href=@Url.Action("Dashboard","Tickets", new { id = ticket.Id })>@ticket.Issue</a>
-                                                                </td>
-                                                                <td>
-                                                                    @devN
-                                                                </td>
-                                                                <td>
-                                                                    <span id=@prio class="priospan">@ticket.TicketPriority.Name</span>
-                                                                </td>
-                                                                <td>
-                                                                    @submN
-                                                                </td>
-                                                                <td>
-                                                                    @ticket.Created.ToString("MMM dd, yyyy")
-                                                                </td>
-                                                            </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <a href=@Url.Action("Dashboard","Tickets", new { id = ticket.Id })>@ticket.Issue</a>
+                                                                    </td>
+                                                                    <td>
+                                                                        @devN
+                                                                    </td>
+                                                                    <td>
+                                                                        <span id=@prio class="priospan">@ticket.TicketPriority.Name</span>
+                                                                    </td>
+                                                                    <td>
+                                                                        @submN
+                                                                    </td>
+                                                                    <td>
+                                                                        @ticket.Created.ToString("MMM dd, yyyy")
+                                                                    </td>
+                                                                </tr>
                                                             }
                                                         </tbody>
                                                     </table>
@@ -552,7 +597,7 @@
             </div>
         </div>
     </div>
-    </div>
+</div>
 
 
 
