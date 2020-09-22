@@ -231,7 +231,7 @@
                                             var devUser = userHelper.GetUserById(Model.DeveloperId);
                                             <div class="row">
                                                 @if (User.IsInRole("Admin") || (User.IsInRole("Project Manager") && (User.Identity.GetUserId() == Model.Project.ManagerId)))
-                                                {<a class="btn btn-primary" data-toggle="modal" data-target="#modalAssignDev">Assign A Developer</a>}
+                                                {<a class="btn btn-primary" data-toggle="modal" data-target="#modalAssignDev">Reassign the Developer</a>}
                                             </div>
                                             <hr />
                                             <div class="row">
@@ -430,9 +430,9 @@
                             <div class="col-md-8 col-lg-offset-2">
                                 <div class="card smallcard">
 
-                                    <h2 class="card-header">Project History</h2>
+                                    <h2 class="card-header">Ticket History</h2>
                                     <div class="card-content">
-                                        @if (Model.Comments.Count == 0)
+                                        @if (Model.Histories.Count == 0)
                                         {
                                             <h4>No Changes</h4>
                                         }

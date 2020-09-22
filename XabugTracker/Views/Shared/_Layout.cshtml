@@ -43,7 +43,6 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
 
 
 
@@ -407,13 +406,13 @@
                             <li class="dropdown">
                                 <a href="#notifications" class="dropdown-toggle btn-rotate" data-toggle="dropdown">
                                     <i class="ti-bell"></i>
-                                    <span class="notification">@user.Notifications.Count</span>
+                                    <span class="notification"><span id="notifcount"></span></span>
                                     <p class="hidden-md hidden-lg">
                                         Notifications
                                         <b class="caret"></b>
                                     </p>
                                 </a>
-                                <ul class="dropdown-menu">
+                                <ul class="dropdown-menu notif-menu">
 
                                     @foreach (var notif in user.Notifications.Where(n => n.IsRead == false))
                                     {
@@ -520,11 +519,12 @@
     <!-- My Custom JS-->
     <script src="~/Scripts/js/custom.js"></script>
     <script>
+        var notifcount = Number(@user.Notifications.Count);
         $('.notifClick').on("click", function () {
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
-                    confirmButton: 'btn btn-primary',
-                    cancelButton: 'btn btn-primary'
+                    confirmButton: 'btn btn-primary btn-lg swal2-btn',
+                    cancelButton: 'btn btn-primary btn-lg swal2-btn'
                 },
                 buttonsStyling: false
             })
@@ -537,7 +537,6 @@
                 title: 'Manage Notification',
                 text: buttonBody,
                 icon: 'info',
-                width: 1000,
                 showCancelButton: true,
                 confirmButtonText: 'Delete this message',
                 cancelButtonText: 'Mark as Read',
