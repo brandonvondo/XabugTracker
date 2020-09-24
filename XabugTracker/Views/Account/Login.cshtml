@@ -85,7 +85,6 @@
                                         <div class="nav-tabs-wrapper">
                                             <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
                                                 <li class="active"><a href="#login" data-toggle="tab">Default Login</a></li>
-                                                <li><a href="#thirdparty" data-toggle="tab">3rd Party</a></li>
                                                 <li><a href="#demologintab" data-toggle="tab">Demo</a></li>
                                             </ul>
                                         </div>
@@ -122,11 +121,7 @@
 
                                             }
                                         </div>
-                                        <div class="tab-pane" id="thirdparty">
-                                                <div class="external">
-                                                    @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
-                                                </div>
-                                        </div>
+                                        
                                         <div class="tab-pane text-center" id="demologintab">
                                             <div class="row">
                                                 <h3 class="card-title">DEMO LOGIN AS A(N)</h3>

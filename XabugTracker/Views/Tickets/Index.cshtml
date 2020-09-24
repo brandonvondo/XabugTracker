@@ -16,21 +16,6 @@
     });
 </script>
 
-@if (User.IsInRole("Submitter"))
-{
-    <ul class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" class="tab" href="#home">My Tickets</a></li>
-        <li><a data-toggle="tab" class="tab" href="#myticketS">My Created Tickets</a></li>
-    </ul>
-}
-else if (User.IsInRole("Developer"))
-{
-    <ul class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" class="tab" href="#home">My Tickets</a></li>
-        <li><a data-toggle="tab" class="tab" href="#myticketD">My Assigned Tickets</a></li>
-    </ul>
-}
-
 <div id="home" class="tab-pane fade in active">
     <div class="card tablecardpad">
         <div class="row">

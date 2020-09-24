@@ -79,8 +79,15 @@ namespace XabugTracker.Helpers
         public bool IsUserOnProject(string userId, int projectId)
         {
             Project project = db.Projects.Find(projectId);
-            var user = db.Users.Find(userId);
-            return project.Users.Contains(user);
+            foreach(var member in project.Users)
+            {
+                if (member.Id == userId)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public bool IsUserOnAnyProject()

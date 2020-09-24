@@ -225,6 +225,12 @@ namespace XabugTracker.Migrations
             context.SaveChanges();
 
             #region Assigning Users to Projects by Role
+            bool subPro = false;
+            bool devPro = false;
+            bool pmPro = false;
+            var demosub = context.Users.Where(u => u.Email == demoSubmitterEmail).FirstOrDefault();
+            var demodev = context.Users.Where(u => u.Email == demoDeveloperEmail).FirstOrDefault();
+            var demopm = context.Users.Where(u => u.Email == demoProjectManagerEmail).FirstOrDefault();
             foreach (var project in projList)
             {
                 var pmV = 0;
@@ -239,7 +245,16 @@ namespace XabugTracker.Migrations
                         {
                             List<ApplicationUser> innerListP = pmList.Where(prom => prom.Projects.Count == 0).ToList();
                             var pm = innerListP[random.Next(innerListP.Count)];
-                            projectHelper.AddUserToProject(pm.Id, project.Id);
+                            if (!pmPro)
+                            {
+                                projectHelper.AddUserToProject(demopm.Id, project.Id);
+                                pmPro = true;
+                            }
+                            else
+                            {
+
+                                projectHelper.AddUserToProject(pm.Id, project.Id);
+                            }
                             string PHmessage = "Project Manager " + pm.FullName + " has been assigned to be the project manager";
                             project.ManagerId = pm.Id;
                             historyHelper.CreateProjectHistory(project.Id, PHmessage);
@@ -258,7 +273,16 @@ namespace XabugTracker.Migrations
                         if (s < 2)
                         {
                             var user = projectHelper.UserInRoleNotOnProject(project, "Submitter");
-                            projectHelper.AddUserToProject(user.Id, project.Id);
+                            if (!subPro)
+                            {
+                                projectHelper.AddUserToProject(demosub.Id, project.Id);
+                                subPro = true;
+                            }
+                            else
+                            {
+
+                                projectHelper.AddUserToProject(user.Id, project.Id);
+                            }
                             string PHmessage = user.FullName + " was added to " + project.Name + " at " + DateTime.Now.ToString("MMM dd, yyyy h tt");
                             historyHelper.CreateProjectHistory(project.Id, PHmessage);
                             s++;
@@ -266,7 +290,16 @@ namespace XabugTracker.Migrations
                         if (d < 4)
                         {
                             var user = projectHelper.UserInRoleNotOnProject(project, "Developer");
-                            projectHelper.AddUserToProject(user.Id, project.Id);
+                            if (!devPro)
+                            {
+                                projectHelper.AddUserToProject(demodev.Id, project.Id);
+                                devPro = true;
+                            }
+                            else
+                            {
+
+                                projectHelper.AddUserToProject(user.Id, project.Id);
+                            }
                             string PHmessage = user.FullName + " was added to " + project.Name + " at " + DateTime.Now.ToString("MMM dd, yyyy h tt");
                             historyHelper.CreateProjectHistory(project.Id, PHmessage);
                             d++;

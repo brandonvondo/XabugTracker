@@ -24,24 +24,8 @@ namespace XabugTracker.Controllers
         // GET: Tickets
         public ActionResult Index()
         {
-            var userRole = userRolesHelper.ListUserRole();
-            var returnView = new List<Ticket>();
-            var userId = User.Identity.GetUserId();
+            var returnView = db.Tickets.ToList();
 
-            switch (userRole)
-            {
-                case "Admin":
-                    returnView = db.Tickets.ToList();
-                    break;
-
-                case "Submitter":
-                case "Developer":
-                case "Project Manager":
-                default:
-                    returnView = ticketHelper.ListUserTickets(User.Identity.GetUserId());
-                    break;
-                
-            }
             return View(returnView);
         }
 
@@ -87,14 +71,10 @@ namespace XabugTracker.Controllers
                 return HttpNotFound();
             }
             List<ApplicationUser> projUse = ticket.Project.Users.ToList();
-            if(projectHelper.IsUserOnProject(User.Identity.GetUserId(), ticket.ProjectId))
-            {
-                ViewBag.DeveloperIds = new SelectList(userRolesHelper.ProjectUsersInRole("Developer", projUse), "Id", "FullName");
-                ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name");
-                ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name");
-                return View(ticket);
-            }
-            return RedirectToAction("Index", "Tickets");
+            ViewBag.DeveloperIds = new SelectList(userRolesHelper.ProjectUsersInRole("Developer", projUse), "Id", "FullName");
+            ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name");
+            ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name");
+            return View(ticket);
         }
 
         // POST: Tickets/Create

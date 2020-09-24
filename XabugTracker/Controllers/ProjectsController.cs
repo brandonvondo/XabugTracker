@@ -55,7 +55,7 @@ namespace XabugTracker.Controllers
             {
                 return HttpNotFound();
             }
-            if(projectHelper.IsUserOnProject(User.Identity.GetUserId(), project.Id))
+            if(projectHelper.IsUserOnProject(User.Identity.GetUserId(), project.Id) || User.IsInRole("Admin"))
             {
                 var userIds = userRoleHelper.UsersNotInRole("Project Manager");
                 ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name");

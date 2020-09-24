@@ -6,8 +6,47 @@
     TicketHelper ticketHelper = new TicketHelper();
     var user = userHelper.GetUser();
     var roleName = userRolesHelper.ListUserRole(user.Id);
+    if (roleName == null)
+    {
+        roleName = "No Role";
+    }
 }
+
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+@if (ticketHelper.graphShow())
+{
+
+    var graphData = ticketHelper.TypeGraph();
+    var graphData2 = ticketHelper.PriorityGraph();
+    <script type="text/javascript">
+        $(document).ready(function () {
+                            var data = {
+
+            lables: ['Software', 'Feature Request', 'UI Issue', 'Defect', 'Other'],
+            series: [@graphData[0], @graphData[1], @graphData[2], @graphData[3], @graphData[4]]
+        };
+
+        var sum = function (a, b) { return a + b };
+
+        new Chartist.Pie('.ct-chart', data, {
+            labelInterpolationFnc: function (value) {
+                return Math.round(value / data.series.reduce(sum) * 100) + '%';
+            }
+        });
+
+        var data2 = {
+            series: [@graphData2[0], @graphData2[1], @graphData2[2], @graphData2[3] ]
+        };
+
+        var sum2 = function (a, b) { return a + b };
+
+        new Chartist.Pie('.ct-chart2', data2, {
+            labelInterpolationFnc: function (value) {
+                return Math.round(value / data2.series.reduce(sum2) * 100) + '%';
+            }
+        });});
+    </script>
+}
 <script type="text/javascript">
     $(document).ready(function () {
         $('#ticktable').DataTable();
@@ -63,15 +102,6 @@
                                         </div>
                                     </div>
                                     break;
-                                case "Admin":
-                                    <div class="card" data-background-color="orange">
-                                        <div class="card-content">
-                                            <h4 class="card-title">
-                                                All Tickets: @ticketHelper.TicketCount()
-                                            </h4>
-                                        </div>
-                                    </div>
-                                    break;
                                 case "Project Manager":
                                     <div class="card" data-background-color="orange">
                                         <div class="card-content">
@@ -81,9 +111,69 @@
                                         </div>
                                     </div>
                                     break;
+
+                                default:
+                                    <div class="card" data-background-color="orange">
+                                        <div class="card-content">
+                                            <h4 class="card-title">
+                                                All Tickets: @ticketHelper.TicketCount()
+                                            </h4>
+                                        </div>
+                                    </div>
+                                    break;
                             }
                         </div>
                     </div>
+                    @if (ticketHelper.graphShow())
+                    {
+                        <div class="row margin-top">
+
+                            <div class="col-md-6">
+
+                                <div class="ct-chart"></div>
+
+                            </div>
+                            <div class="col-md-6">
+
+                                <div class="ct-chart2"></div>
+
+                            </div>
+
+                        </div>
+                        <div class="row">
+
+                            <div class="col-md-6">
+
+                                <h6>All My Project's Tickets by Type Legend</h6>
+                                <div class="row">
+                                    <i class="fa fa-circle text-info"></i> Software
+                                    <i class="fa fa-circle text-warning"></i> Feature Request
+                                </div>
+                                <div class="row">
+                                    <i class="fa fa-circle text-danger"></i> UI Issue
+                                    <i class="fa fa-circle text-success"></i> Defect
+                                    <i class="fa fa-circle text-primary"></i> Other
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+
+                                <h6>All My Project's Tickets by Priority Legend</h6>
+                                <div class="row">
+
+                                    <i class="fa fa-circle text-success"></i> Low
+                                    <i class="fa fa-circle text-warning"></i> Medium
+                                </div>
+                                <div class="row">
+                                    <i class="fa fa-circle text-danger"></i> High
+                                    <i class="fa fa-circle text-info"></i> On Hold
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    }
                     <div class="row">
                         @switch (userRolesHelper.ListUserRole())
                         {

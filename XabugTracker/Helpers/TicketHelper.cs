@@ -171,7 +171,82 @@ namespace XabugTracker.Helpers
             var ticketC = db.Tickets.ToList().Count;
             return ticketC;
         }
-        
+
+        public decimal[] TypeGraph()
+        {
+            var userId = HttpContext.Current.User.Identity.GetUserId();
+            var list = ListUserTickets(userId);
+            decimal software = 0;
+            decimal feature = 0;
+            decimal UI = 0;
+            decimal defect = 0;
+            decimal other = 0;
+            foreach (var ticket in list)
+            {
+                switch(ticket.TicketType.Name)
+                {
+                    case "Software": software++;
+                        break;
+                    case "Feature Request": feature++;
+                        break;
+                    case "UI": UI++;
+                        break;
+                    case "Defect": defect++;
+                        break;
+                    case "Other": other++;
+                        break;
+                }
+            }
+
+            decimal[] result = { software, feature, UI, defect, other };
+
+            return result;
+        }
+
+        public decimal[] PriorityGraph()
+        {
+            var userId = HttpContext.Current.User.Identity.GetUserId();
+            var list = ListUserTickets(userId);
+            decimal low = 0;
+            decimal medium = 0;
+            decimal high = 0;
+            decimal onhold = 0;
+            foreach (var ticket in list)
+            {
+                switch (ticket.TicketPriority.Name)
+                {
+                    case "Low":
+                        low++;
+                        break;
+                    case "Medium":
+                        medium++;
+                        break;
+                    case "High":
+                        high++;
+                        break;
+                    case "On Hold":
+                        onhold++;
+                        break;
+                }
+            }
+
+            decimal[] result = { onhold, medium, high, low };
+
+            return result;
+        }
+
+        public bool graphShow()
+        {
+            var userId = HttpContext.Current.User.Identity.GetUserId();
+            var list = ListUserTickets(userId);
+            if (list.Count > 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public SelectList LayoutViewbag(string TicketWhat)
         {
             switch(TicketWhat)
